@@ -11,13 +11,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ModeToggle } from "../ui/mode-toggle";
+import { Link } from "react-router";
+import { AuthDialog } from "../modules/auth/AuthDialog";
 
-// Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { href: "#", label: "Home", active: true },
-  { href: "#", label: "Features" },
-  { href: "#", label: "Pricing" },
-  { href: "#", label: "About" },
+  { href: "/", label: "Home" },
+  { href: "/", label: "Tours" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {
@@ -61,37 +63,32 @@ export default function Navbar() {
                 </svg>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-36 p-1 md:hidden">
-              <NavigationMenu className="max-w-none *:w-full">
-                <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink
-                        href={link.href}
-                        className="py-1.5"
-                        active={link.active}
-                      >
-                        {link.label}
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                  ))}
-                </NavigationMenuList>
-              </NavigationMenu>
+            <PopoverContent align="start" className="w-40 p-2 md:hidden">
+              <nav className="flex flex-col gap-2">
+                {navigationLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    to={link.href}
+                    className="rounded-md px-3 py-2 hover:bg-muted"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
             </PopoverContent>
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <a href="#" className="text-primary hover:text-primary/90">
+            <Link to="/" className="text-primary hover:text-primary/90">
               <Logo />
-            </a>
+            </Link>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
                 {navigationLinks.map((link, index) => (
                   <NavigationMenuItem key={index}>
                     <NavigationMenuLink
-                      active={link.active}
-                      href={link.href}
+                      render={<Link to={link.href} />}
                       className="text-muted-foreground hover:text-primary py-1.5 font-medium"
                     >
                       {link.label}
@@ -104,12 +101,9 @@ export default function Navbar() {
         </div>
         {/* Right side */}
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="text-sm">
-            <a href="#">Sign In</a>
-          </Button>
-          <Button size="sm" className="text-sm">
-            <a href="#">Get Started</a>
-          </Button>
+          <ModeToggle />
+
+          <AuthDialog />
         </div>
       </div>
     </header>
