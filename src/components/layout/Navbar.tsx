@@ -20,8 +20,9 @@ import UserDropdown from "../ui/UserDropdown";
 
 const navigationLinks = [
   { href: "/", label: "Home", role: "PUBLIC" },
-  { href: "/about", label: "About", role: "PUBLIC" },
   { href: "/tours", label: "Tours", role: "PUBLIC" },
+  { href: "/about", label: "About", role: "PUBLIC" },
+  { href: "/contact", label: "Contact", role: "PUBLIC" },
 ];
 
 export default function Navbar() {
