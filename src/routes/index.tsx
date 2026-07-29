@@ -1,6 +1,22 @@
 import App from "@/App";
-import AboutPage from "@/pages/About";
-import { createBrowserRouter } from "react-router";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import About from "@/pages/About";
+import Verify from "@/pages/Verify";
+import { generateRoutes } from "@/utils/generateRoutes";
+import { createBrowserRouter, Navigate } from "react-router";
+import { adminSidebarItems } from "./adminSidebarItems";
+import { userSidebarItems } from "./userSidebarItems";
+import { withAuth } from "@/utils/withAuth";
+import Unauthorized from "@/pages/Unauthorized";
+import { role } from "@/constants/role";
+import { TRole } from "@/types";
+import Tours from "@/pages/Tours";
+import TourDetails from "@/pages/TourDetails";
+import Booking from "@/pages/Booking";
+import Homepage from "@/pages/Homepage";
+import Success from "@/pages/Payment/Success";
+import Fail from "@/pages/Payment/Fail";
+import { ResetPassword } from "@/pages/ResetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -8,9 +24,61 @@ export const router = createBrowserRouter([
     path: "/",
     children: [
       {
-        Component: AboutPage,
+        Component: Homepage,
+        index: true,
+      },
+      {
+        Component: About,
         path: "about",
       },
+      {
+        Component: Tours,
+        path: "tours",
+      },
+      {
+        Component: TourDetails,
+        path: "tours/:id",
+      },
+      {
+        Component: withAuth(Booking),
+        path: "booking/:id",
+      },
     ],
+  },
+  {
+    Component: withAuth(DashboardLayout, role.superAdmin as TRole),
+    path: "/admin",
+    children: [
+      { index: true, element: <Navigate to="/admin/analytics" /> },
+      ...generateRoutes(adminSidebarItems),
+    ],
+  },
+  {
+    Component: withAuth(DashboardLayout, role.user as TRole),
+    path: "/user",
+    children: [
+      { index: true, element: <Navigate to="/user/bookings" /> },
+      ...generateRoutes(userSidebarItems),
+    ],
+  },
+  {
+    Component: Verify,
+    path: "/verify",
+  },
+  {
+    Component: ResetPassword,
+    path: "/reset-password",
+  },
+  {
+    Component: Unauthorized,
+    path: "/unauthorized",
+  },
+  {
+    Component: Success,
+    path: "/payment/success",
+  },
+  {
+    Component: Fail,
+    path: "/payment/fail",
   },
 ]);

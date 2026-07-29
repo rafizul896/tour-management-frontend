@@ -1,9 +1,15 @@
-const AboutPage = () => {
+export default function About() {
   return (
-    <div>
-      <h1 className="text-center">About Page</h1>
-    </div>
+    <>
+      <div className="py-16 px-4 container mx-auto">
+        <h1> This is About component </h1>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero, qui
+          eos. Architecto quisquam odit soluta fugit quos ab unde, voluptatem
+          eos necessitatibus nesciunt, in neque consequatur adipisci velit
+          accusantium illum.
+        </p>
+      </div>
+    </>
   );
-};
-
-export default AboutPage;
+}
