@@ -21,6 +21,7 @@ import {
 import { useAppDispatch } from "@/redux/hook";
 import { role } from "@/constants/role";
 import React from "react";
+import { AuthDialog } from "../modules/auth/AuthDialog";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -144,11 +145,8 @@ export default function Navbar() {
               Logout
             </Button>
           )}
-          {!data?.data?.email && (
-            <Button asChild className="text-sm">
-              <Link to="/login">Login</Link>
-            </Button>
-          )}
+
+          <AuthDialog />
         </div>
       </div>
     </header>

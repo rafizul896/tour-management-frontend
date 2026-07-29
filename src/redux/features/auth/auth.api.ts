@@ -25,7 +25,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
     sendOtp: builder.mutation<IResponse<null>, ISendOtp>({
-      query: (userInfo) => ({
+      query: (userInfo: { name: string; email: string }) => ({
         url: "/otp/send",
         method: "POST",
         data: userInfo,
@@ -36,6 +36,23 @@ export const authApi = baseApi.injectEndpoints({
         url: "/otp/verify",
         method: "POST",
         data: userInfo,
+      }),
+    }),
+    forgotPassword: builder.mutation<IResponse<null>, { email: string }>({
+      query: (email) => ({
+        url: "/auth/forgot-password",
+        method: "POST",
+        data: email,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: ({ id, newPassword, token }) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        data: { id, newPassword },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }),
     }),
     userInfo: builder.query({
@@ -55,4 +72,6 @@ export const {
   useVerifyOtpMutation,
   useUserInfoQuery,
   useLogoutMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = authApi;

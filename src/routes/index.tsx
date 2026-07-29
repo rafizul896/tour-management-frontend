@@ -1,8 +1,6 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import About from "@/pages/About";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
 import Verify from "@/pages/Verify";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { createBrowserRouter, Navigate } from "react-router";
@@ -18,6 +16,7 @@ import Booking from "@/pages/Booking";
 import Homepage from "@/pages/Homepage";
 import Success from "@/pages/Payment/Success";
 import Fail from "@/pages/Payment/Fail";
+import { ResetPassword } from "@/pages/ResetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -63,16 +62,12 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    Component: Login,
-    path: "/login",
-  },
-  {
-    Component: Register,
-    path: "/register",
-  },
-  {
     Component: Verify,
     path: "/verify",
+  },
+  {
+    Component: ResetPassword,
+    path: "/reset-password",
   },
   {
     Component: Unauthorized,

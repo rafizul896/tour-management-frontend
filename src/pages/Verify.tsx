@@ -23,10 +23,14 @@ import {
 } from "@/components/ui/input-otp";
 import { cn } from "@/lib/utils";
 import {
+  useLoginMutation,
   useSendOtpMutation,
   useVerifyOtpMutation,
 } from "@/redux/features/auth/auth.api";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Dot } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -43,10 +47,15 @@ const FormSchema = z.object({
 export default function Verify() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [email] = useState(location.state);
+  const { name, email, password } = location.state as {
+    name: string;
+    email: string;
+    password: string;
+  };
   const [confirmed, setConfirmed] = useState(false);
   const [sendOtp] = useSendOtpMutation();
   const [verifyOtp] = useVerifyOtpMutation();
+  const [login] = useLoginMutation();
   const [timer, setTimer] = useState(5);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -60,15 +69,16 @@ export default function Verify() {
     const toastId = toast.loading("Sending OTP");
 
     try {
-      const res = await sendOtp({ email: email }).unwrap();
+      const res = await sendOtp({ name, email }).unwrap();
 
       if (res.success) {
         toast.success("OTP Sent", { id: toastId });
         setConfirmed(true);
         setTimer(5);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
+      toast.error(err?.message || "Something is wrong");
     }
   };
 
@@ -81,21 +91,20 @@ export default function Verify() {
 
     try {
       const res = await verifyOtp(userInfo).unwrap();
+
       if (res.success) {
         toast.success("OTP Verified", { id: toastId });
         setConfirmed(true);
+
+        await login({ email, password });
+        navigate("/");
       }
     } catch (err) {
-      console.log(err);
+      toast.error(
+        getErrorMessage(err as FetchBaseQueryError | SerializedError),
+      );
     }
   };
-
-  //! Needed - Turned off for development
-  //   useEffect(() => {
-  //     if (!email) {
-  //       navigate("/");
-  //     }
-  //   }, [email]);
 
   useEffect(() => {
     if (!email || !confirmed) {
