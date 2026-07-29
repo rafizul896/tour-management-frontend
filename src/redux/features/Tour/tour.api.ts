@@ -21,16 +21,15 @@ export const tourApi = baseApi.injectEndpoints({
     }),
     removeTourType: builder.mutation({
       query: (tourTypeId) => ({
-        url: `/tour/tour-types/${tourTypeId}`,
+        url: `/tour/tour-type/${tourTypeId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["TOUR"],
     }),
     getTourTypes: builder.query({
-      query: (params) => ({
-        url: "/tour/tour-types",
+      query: () => ({
+        url: "/tour/tour-type",
         method: "GET",
-        params,
       }),
       providesTags: ["TOUR"],
       transformResponse: (response) => response.data,
