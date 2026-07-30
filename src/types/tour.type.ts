@@ -20,4 +20,21 @@ export interface ITourPackage {
   images: string[];
   createdAt: string;
   updatedAt: string;
+  guides: IGuide[];
+}
+
+
+interface IDivision {
+  _id: string;
+  name: string;
+}
+
+interface ITourType {
+  _id: string;
+  name: string;
+}
+
+interface IGuide {
+  _id: string;
+  name: string;
 }

@@ -18,7 +18,7 @@ export default function Tours() {
     <div className="container mx-auto px-5 py-8 grid grid-cols-12 gap-5">
       <TourFilters />
       <div className="col-span-9 w-full">
-        {data?.map((item) => (
+        {data?.data?.map((item) => (
           <div
             key={item.slug}
             className="border border-muted rounded-lg shadow-md overflow-hidden mb-6 flex"

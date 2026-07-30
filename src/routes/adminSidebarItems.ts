@@ -1,5 +1,7 @@
+import AddTour from "@/components/modules/Admin/Tour/AddTour";
 import ManageDivision from "@/pages/Admin/AddDivision";
-import ManageTour from "@/pages/Admin/AddTour";
+import ManageTour from "@/pages/Admin/ManageTour";
+// import ManageTour from "@/components/modules/Admin/Tour/AddTour";
 import ManageTourType from "@/pages/Admin/ManageTourType";
 import { ISidebarItem } from "@/types";
 import { lazy } from "react";

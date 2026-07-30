@@ -18,6 +18,8 @@ import Fail from "@/pages/Payment/Fail";
 import { ResetPassword } from "@/pages/auth/ResetPassword";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+import AddTour from "@/components/modules/Admin/Tour/AddTour";
+import UpdateTour from "@/components/modules/Admin/Tour/UpdateTour";
 
 export const router = createBrowserRouter([
   {
@@ -56,6 +58,14 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/admin/analytics" /> },
       ...generateRoutes(adminSidebarItems),
+      {
+        Component: AddTour,
+        path: "/admin/add-tour",
+      },
+      {
+        Component: UpdateTour,
+        path: "/admin/update-tour/:tourId",
+      },
     ],
   },
   {

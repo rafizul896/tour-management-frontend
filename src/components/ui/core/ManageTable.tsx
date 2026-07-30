@@ -6,7 +6,6 @@ import {
   Eye,
   Loader2,
   MoreHorizontal,
-  Trash,
 } from "lucide-react";
 import React, { useState } from "react";
 import {
@@ -24,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 import { Button } from "../button";
+import { DeleteConfirmation } from "@/components/DeleteConfirmation";
 
 export interface Column<T> {
   header: string;
@@ -182,13 +182,9 @@ function ManagementTable<T>({
                             </DropdownMenuItem>
                           )}
                           {onDelete && (
-                            <DropdownMenuItem
-                              onClick={() => onDelete(item)}
-                              className="text-destructive"
-                            >
-                              <Trash className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
+                            <DeleteConfirmation
+                              onConfirm={() => onDelete(item)}
+                            />
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>

@@ -1,19 +1,8 @@
-import { DeleteConfirmation } from "@/components/DeleteConfirmation";
 import { AddTourTypeModal } from "@/components/modules/Admin/TourType/AddTourModal";
-import { Button } from "@/components/ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   useGetTourTypesQuery,
   useRemoveTourTypeMutation,
 } from "@/redux/features/Tour/tour.api";
-import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 import ManagementTable, { Column } from "@/components/ui/core/ManageTable";
@@ -50,25 +39,11 @@ const ManageTourType = () => {
 
   const totalPage = data?.meta?.totalPage || 2;
 
-  // Column definitions — same shape as your old <TableHead>/<TableCell> pairs
   const columns: Column<TourType>[] = [
     {
       header: "Name",
       accessor: "name",
       className: "w-full font-medium",
-    },
-    {
-      header: "Action",
-      accessor: (item) => (
-        <div className="flex justify-end">
-          <DeleteConfirmation onConfirm={() => handleRemoveTourType(item._id)}>
-            <Button size="sm">
-              <Trash2 />
-            </Button>
-          </DeleteConfirmation>
-        </div>
-      ),
-      className: "text-right",
     },
   ];
 
@@ -85,6 +60,7 @@ const ManageTourType = () => {
         getRowKey={(item) => item._id}
         isRefreshing={isFetching}
         emptyMessage="No tour types found."
+        onDelete={(item) => handleRemoveTourType(item._id)}
       />
 
       {totalPage > 1 && (

@@ -36,16 +36,19 @@ import { FileMetadata } from "@/hooks/use-file-upload";
 import { cn } from "@/lib/utils";
 import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import {
-  useAddTourMutation,
+  useGetSingleTourQuery,
   useGetTourTypesQuery,
 } from "@/redux/features/Tour/tour.api";
-import { IErrorResponse } from "@/types";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { format, formatISO } from "date-fns";
-import { CalendarIcon, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { CalendarIcon, Loader2, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { useFieldArray, useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -68,73 +71,92 @@ const formSchema = z.object({
   tourType: z.string().min(1, "Tour type is required"),
 });
 
-export default function AddTour() {
-  const [images, setImages] = useState<(File | FileMetadata)[] | []>([]);
+const toFieldArray = (arr?: string[]) =>
+  arr && arr.length > 0 ? arr.map((value) => ({ value })) : [{ value: "" }];
+
+export default function UpdateTour() {
+  const navigate = useNavigate();
+  const { tourId } = useParams<{ tourId: string }>();
+  const [images, setImages] = useState<(File | FileMetadata | string)[] | []>(
+    [],
+  );
+  const [imagesReady, setImagesReady] = useState(false);
+
+  const { data: tourData, isLoading: tourLoading } = useGetSingleTourQuery(
+    tourId,
+    { skip: !tourId },
+  );
 
   const { data: divisionData, isLoading: divisionLoading } =
     useGetDivisionsQuery(undefined);
   const { data: tourTypeData } = useGetTourTypesQuery(undefined);
-  const [addTour] = useAddTourMutation();
+  //   const [updateTour] = useUpdateTourMutation();
 
   const divisionOptions = divisionData?.map(
     (item: { _id: string; name: string }) => ({
       value: item._id,
       label: item.name,
-    })
+    }),
   );
 
-  const tourTypeOptions = tourTypeData?.data?.map(
+  const tourTypeOptions = tourTypeData?.map(
     (tourType: { _id: string; name: string }) => ({
       value: tourType._id,
       label: tourType.name,
-    })
+    }),
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "Dhaka to Rajshahi Heritage Tour",
-      description:
-        "Discover the historical treasures of Rajshahi, known as the 'Silk City' of Bangladesh. Explore ancient Buddhist ruins at Paharpur, visit the magnificent Puthia Palace complex, and experience the rich cultural heritage of north Bengal. Perfect for history enthusiasts and cultural explorers.",
-      location: "Rajshahi",
-      costFrom: "12000",
+      title: "",
+      description: "",
+      location: "",
+      costFrom: "",
       startDate: new Date(),
-      endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days later
-      departureLocation: "Dhaka",
-      arrivalLocation: "Rajshahi",
-      included: [
-        { value: "Accommodation for 2 nights" },
-        { value: "All meals (breakfast, lunch, dinner)" },
-        { value: "Transportation (AC bus)" },
-        { value: "Professional tour guide" },
-        { value: "Entry fees to all historical sites" },
-        { value: "Paharpur monastery visit" },
-      ],
-      excluded: [
-        { value: "Personal expenses" },
-        { value: "Extra activities not mentioned" },
-        { value: "Travel insurance" },
-        { value: "Shopping expenses" },
-        { value: "Photography charges at monuments" },
-      ],
-      amenities: [
-        { value: "Comfortable hotel rooms" },
-        { value: "Free WiFi" },
-        { value: "Air conditioning" },
-        { value: "Local transportation" },
-        { value: "Cultural performance evening" },
-      ],
-      tourPlan: [
-        { value: "Day 1: Arrival in Rajshahi and Puthia Palace complex tour" },
-        { value: "Day 2: Paharpur Buddhist monastery and Mahasthangarh visit" },
-        { value: "Day 3: Rajshahi city tour and silk weaving centers" },
-      ],
-      maxGuest: "20",
-      minAge: "8",
+      endDate: new Date(),
+      departureLocation: "",
+      arrivalLocation: "",
+      included: [{ value: "" }],
+      excluded: [{ value: "" }],
+      amenities: [{ value: "" }],
+      tourPlan: [{ value: "" }],
+      maxGuest: "",
+      minAge: "",
       division: "",
       tourType: "",
     },
   });
+
+  useEffect(() => {
+    const tour = tourData?.data ?? tourData; // support either shape
+
+    if (!tour) return;
+
+    form.reset({
+      title: tour.title ?? "",
+      description: tour.description ?? "",
+      location: tour.location ?? "",
+      costFrom: String(tour.costFrom ?? ""),
+      startDate: tour.startDate ? new Date(tour.startDate) : new Date(),
+      endDate: tour.endDate ? new Date(tour.endDate) : new Date(),
+      departureLocation: tour.departureLocation ?? "",
+      arrivalLocation: tour.arrivalLocation ?? "",
+      included: toFieldArray(tour.included),
+      excluded: toFieldArray(tour.excluded),
+      amenities: toFieldArray(tour.amenities),
+      tourPlan: toFieldArray(tour.tourPlan),
+      maxGuest: String(tour.maxGuest ?? ""),
+      minAge: String(tour.minAge ?? ""),
+      division: tour.division ?? tour.division ?? "",
+      tourType: tour.tourType ?? tour.tourType ?? "",
+    });
+
+    if (tour?.images) {
+      setImages(tour?.images);
+    }
+    setImagesReady(true);
+  }, [tourData, form]);
 
   const {
     fields: includedFields,
@@ -173,7 +195,7 @@ export default function AddTour() {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    const toastId = toast.loading("Creating tour....");
+    const toastId = toast.loading("Updating tour....");
 
     if (images.length === 0) {
       toast.error("Please add some images", { id: toastId });
@@ -192,7 +214,7 @@ export default function AddTour() {
           ? []
           : data.included.map((item: { value: string }) => item.value),
       excluded:
-        data.included[0].value === ""
+        data.excluded[0].value === ""
           ? []
           : data.excluded.map((item: { value: string }) => item.value),
       amenities:
@@ -208,36 +230,50 @@ export default function AddTour() {
     const formData = new FormData();
 
     formData.append("data", JSON.stringify(tourData));
-    images.forEach((image) => formData.append("files", image as File));
-
-    try {
-      const res = await addTour(formData).unwrap();
-
-      if (res.success) {
-        toast.success("Tour created", { id: toastId });
-        form.reset();
-      } else {
-        toast.error("Something went wrong", { id: toastId });
+    images.forEach((image) => {
+      if (image instanceof File) {
+        formData.append("files", image);
       }
-    } catch (err: unknown) {
-      console.error(err);
-      toast.error((err as IErrorResponse).message || "Something went wrong", {
-        id: toastId,
-      });
+    });
+
+    console.log({ id: tourId, data: formData });
+    try {
+      console.log(JSON.stringify(tourData, null, 2));
+
+      //   const res = await updateTour({ id: tourId, data: formData }).unwrap();
+      //   if (res.success) {
+      //     toast.success("Tour updated", { id: toastId });
+      //     navigate("/admin/manage-tour");
+      //   } else {
+      //     toast.error("Something went wrong", { id: toastId });
+      //   }
+    } catch (err) {
+      toast.error(
+        getErrorMessage(err as FetchBaseQueryError | SerializedError),
+        { id: toastId },
+      );
     }
   };
+
+  if (tourLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto px-5 mt-16 flex justify-center py-20">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto px-5 mt-16">
       <Card>
         <CardHeader>
-          <CardTitle>Add New Tour</CardTitle>
-          <CardDescription>Add a new tour to the system</CardDescription>
+          <CardTitle>Update Tour</CardTitle>
+          <CardDescription>Update an existing tour</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form
-              id="add-tour-form"
+              id="update-tour-form"
               className="space-y-5"
               onSubmit={form.handleSubmit(handleSubmit)}
             >
@@ -319,12 +355,12 @@ export default function AddTour() {
                       <FormLabel>Division</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                         disabled={divisionLoading}
                       >
                         <FormControl>
                           <SelectTrigger className="w-full">
-                            <SelectValue />
+                            <SelectValue placeholder="Select Tour Division" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -333,7 +369,7 @@ export default function AddTour() {
                               <SelectItem key={item.value} value={item.value}>
                                 {item.label}
                               </SelectItem>
-                            )
+                            ),
                           )}
                         </SelectContent>
                       </Select>
@@ -350,11 +386,11 @@ export default function AddTour() {
                       <FormLabel>Tour Type</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="w-full">
-                            <SelectValue />
+                            <SelectValue placeholder="Select Tour Type" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -366,7 +402,7 @@ export default function AddTour() {
                               >
                                 {option.label}
                               </SelectItem>
-                            )
+                            ),
                           )}
                         </SelectContent>
                       </Select>
@@ -417,7 +453,7 @@ export default function AddTour() {
                               variant={"outline"}
                               className={cn(
                                 "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
+                                !field.value && "text-muted-foreground",
                               )}
                             >
                               {field.value ? (
@@ -437,7 +473,7 @@ export default function AddTour() {
                             disabled={(date) =>
                               date <
                               new Date(
-                                new Date().setDate(new Date().getDate() - 1)
+                                new Date().setDate(new Date().getDate() - 1),
                               )
                             }
                             captionLayout="dropdown"
@@ -461,7 +497,7 @@ export default function AddTour() {
                               variant={"outline"}
                               className={cn(
                                 "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
+                                !field.value && "text-muted-foreground",
                               )}
                             >
                               {field.value ? (
@@ -481,7 +517,7 @@ export default function AddTour() {
                             disabled={(date) =>
                               date <
                               new Date(
-                                new Date().setDate(new Date().getDate() - 1)
+                                new Date().setDate(new Date().getDate() - 1),
                               )
                             }
                             captionLayout="dropdown"
@@ -509,7 +545,12 @@ export default function AddTour() {
                   )}
                 />
                 <div className="flex-1 mt-5">
-                  <MultipleImageUploader onChange={setImages} />
+                  {imagesReady && tourId && (
+                    <MultipleImageUploader
+                      initialImages={images}
+                      onChange={setImages}
+                    />
+                  )}
                 </div>
               </div>
               <div className="border-t border-muted w-full "></div>
@@ -684,8 +725,8 @@ export default function AddTour() {
           </Form>
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button type="submit" form="add-tour-form">
-            Create Tour
+          <Button type="submit" form="update-tour-form">
+            Update Tour
           </Button>
         </CardFooter>
       </Card>
