@@ -1,7 +1,6 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import About from "@/pages/About";
-import Verify from "@/pages/Verify";
+import Verify from "@/pages/auth/Verify";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { createBrowserRouter, Navigate } from "react-router";
 import { adminSidebarItems } from "./adminSidebarItems";
@@ -16,7 +15,11 @@ import Booking from "@/pages/Booking";
 import Homepage from "@/pages/Homepage";
 import Success from "@/pages/Payment/Success";
 import Fail from "@/pages/Payment/Fail";
-import { ResetPassword } from "@/pages/ResetPassword";
+import { ResetPassword } from "@/pages/auth/ResetPassword";
+import About from "@/pages/About";
+import Contact from "@/pages/Contact";
+import AddTour from "@/components/modules/Admin/Tour/AddTour";
+import UpdateTour from "@/components/modules/Admin/Tour/UpdateTour";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +33,10 @@ export const router = createBrowserRouter([
       {
         Component: About,
         path: "about",
+      },
+      {
+        Component: Contact,
+        path: "contact",
       },
       {
         Component: Tours,
@@ -51,6 +58,14 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/admin/analytics" /> },
       ...generateRoutes(adminSidebarItems),
+      {
+        Component: AddTour,
+        path: "/admin/add-tour",
+      },
+      {
+        Component: UpdateTour,
+        path: "/admin/update-tour/:tourId",
+      },
     ],
   },
   {

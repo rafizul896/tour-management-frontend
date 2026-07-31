@@ -5,13 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Dispatch, useEffect } from "react";
 
 export default function MultipleImageUploader({
+  initialImages = [],
   onChange,
 }: {
-  onChange: Dispatch<React.SetStateAction<[] | (File | FileMetadata)[]>>;
+  initialImages?: (File | FileMetadata | string)[];
+  onChange: Dispatch<
+    React.SetStateAction<[] | (File | FileMetadata | string)[]>
+  >;
 }) {
   const maxSizeMB = 5;
-  const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
+  const maxSize = maxSizeMB * 1024 * 1024;
   const maxFiles = 3;
+
+  const normalizedInitial: FileMetadata[] = initialImages.map((img, i) =>
+    typeof img === "string"
+      ? { id: img, name: `image-${i}`, size: 0, type: "image/*", url: img }
+      : (img as FileMetadata),
+  );
 
   const [
     { files, isDragging, errors },
@@ -29,6 +39,7 @@ export default function MultipleImageUploader({
     maxSize,
     multiple: true,
     maxFiles,
+    initialFiles: normalizedInitial, // <-- this was missing
   });
 
   useEffect(() => {

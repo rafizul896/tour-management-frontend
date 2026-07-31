@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -19,22 +18,34 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAddTourTypeMutation } from "@/redux/features/Tour/tour.api";
-import { useForm } from "react-hook-form";
+import { getErrorMessage } from "@/utils/getErrorMessage";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export function AddTourTypeModal() {
+  const [isOpen, setIsopen] = useState(false);
   const form = useForm();
   const [addTourType] = useAddTourTypeMutation();
 
-  const onSubmit = async (data) => {
-    const res = await addTourType({ name: data.name }).unwrap();
-    if (res.success) {
-      toast.success("Tour Type Added");
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const res = await addTourType({ name: data.name }).unwrap();
+      if (res.success) {
+        toast.success("Tour Type Added");
+        setIsopen(!isOpen);
+      }
+    } catch (err) {
+      toast.error(
+        getErrorMessage(err as FetchBaseQueryError | SerializedError),
+      );
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsopen}>
       <form>
         <DialogTrigger asChild>
           <Button>Add Tour Type</Button>

@@ -9,21 +9,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ReactNode } from "react";
+import { Trash2 } from "lucide-react";
 
 interface IProps {
-  children: ReactNode;
   onConfirm: () => void;
 }
 
-export function DeleteConfirmation({ children, onConfirm }: IProps) {
+export function DeleteConfirmation({ onConfirm }: IProps) {
   const handleConfirm = () => {
     onConfirm();
   };
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild>
+        <span className="flex text-sm gap-2 mx-2 mt-1">
+          <Trash2 className="mr-2 h-4 w-4 text-foreground/60" />
+          Delete
+        </span>
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

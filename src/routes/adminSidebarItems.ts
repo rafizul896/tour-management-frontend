@@ -1,7 +1,8 @@
-import AddDivision from "@/pages/Admin/AddDivision";
-import AddTour from "@/pages/Admin/AddTour";
-import AddTourType from "@/pages/Admin/AddTourType";
-// import Analytics from "@/pages/Admin/Analytics";
+import AddTour from "@/components/modules/Admin/Tour/AddTour";
+import ManageDivision from "@/pages/Admin/AddDivision";
+import ManageTour from "@/pages/Admin/ManageTour";
+// import ManageTour from "@/components/modules/Admin/Tour/AddTour";
+import ManageTourType from "@/pages/Admin/ManageTourType";
 import { ISidebarItem } from "@/types";
 import { lazy } from "react";
 
@@ -19,22 +20,22 @@ export const adminSidebarItems: ISidebarItem[] = [
     ],
   },
   {
-    title: "Tour Management",
+    title: "Management",
     items: [
       {
-        title: "Add Tour Type",
-        url: "/admin/add-tour-type",
-        component: AddTourType,
+        title: "Tour Type",
+        url: "/admin/manage-tour-type",
+        component: ManageTourType,
       },
       {
-        title: "Add Division",
-        url: "/admin/add-division",
-        component: AddDivision,
+        title: "Division",
+        url: "/admin/manage-division",
+        component: ManageDivision,
       },
       {
-        title: "Add Tour",
-        url: "/admin/add-tour",
-        component: AddTour,
+        title: "Tour",
+        url: "/admin/manage-tour",
+        component: ManageTour,
       },
     ],
   },

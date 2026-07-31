@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
-import { useGetAllToursQuery } from "@/redux/features/Tour/tour.api";
+import { useGetSingleTourQuery } from "@/redux/features/Tour/tour.api";
+import { ITourPackage } from "@/types";
 import { format } from "date-fns";
 import { Link, useParams } from "react-router";
 
 export default function TourDetails() {
   const { id } = useParams();
-  const { data, isLoading } = useGetAllToursQuery({ _id: id });
+  const { data, isLoading } = useGetSingleTourQuery(id);
 
   const { data: divisionData } = useGetDivisionsQuery(
     {
@@ -15,12 +16,11 @@ export default function TourDetails() {
     },
     {
       skip: !data,
-    }
+    },
   );
 
-  console.log(divisionData);
-
-  const tourData = data?.[0];
+  const tourData:ITourPackage = data?.data;
+  console.log(tourData)
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -66,14 +66,14 @@ export default function TourDetails() {
               <strong>Dates:</strong>{" "}
               {format(
                 new Date(
-                  tourData?.startDate ? tourData?.startDate : new Date()
+                  tourData?.startDate ? tourData?.startDate : new Date(),
                 ),
-                "PP"
+                "PP",
               )}{" "}
               -{" "}
               {format(
                 new Date(tourData?.endDate ? tourData?.endDate : new Date()),
-                "PP"
+                "PP",
               )}
             </p>
             <p>
