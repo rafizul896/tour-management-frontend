@@ -81,6 +81,7 @@ export default function UpdateTour() {
   const [images, setImages] = useState<(File | FileMetadata | string)[] | []>(
     [],
   );
+  const [originalImages, setOriginalImages] = useState<string[]>([]);
   const [imagesReady, setImagesReady] = useState(false);
 
   const { data: tourData, isLoading: tourLoading } = useGetSingleTourQuery(
@@ -155,6 +156,7 @@ export default function UpdateTour() {
 
     if (tour?.images) {
       setImages(tour?.images);
+      setOriginalImages(tour?.images);
     }
     setImagesReady(true);
   }, [tourData, form]);
@@ -203,8 +205,21 @@ export default function UpdateTour() {
       return;
     }
 
+    const currentImageUrls = images
+      .map((img) => {
+        if (img instanceof File) return null;
+        if (typeof img === "string") return img;
+        return img.url;
+      })
+      .filter((url): url is string => Boolean(url));
+
+    const deleteImages = originalImages.filter(
+      (url) => !currentImageUrls.includes(url),
+    );
+
     const tourData = {
       ...data,
+      deleteImages,
       costFrom: Number(data.costFrom),
       minAge: Number(data.minAge),
       maxGuest: Number(data.maxGuest),

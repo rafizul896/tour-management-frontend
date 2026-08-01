@@ -116,7 +116,7 @@ const ManageTour = () => {
         sortOrder={sortOrder}
         onSortChange={handleSortChange}
         emptyMessage="No tours found."
-        onView={(item) => navigate(`/tours/${item.slug}`)}
+        onView={(item) => navigate(`/tours/${item._id}`)}
         onEdit={(item) => navigate(`/admin/update-tour/${item._id}`)}
         onDelete={(item) => handleRemoveTour(item._id)}
       />
