@@ -21,23 +21,40 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { useAddDivisionMutation } from "@/redux/features/division/division.api";
+import { useUpdateDivisionMutation } from "@/redux/features/division/division.api";
 import { toast } from "sonner";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import { Pencil } from "lucide-react";
 
-export function AddDivisionModal() {
-  const [open, setOpen] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
-  const [addDivision] = useAddDivisionMutation();
+interface Division {
+  _id: string;
+  name: string;
+  description?: string;
+  thumbnail?: string;
+}
 
-  console.log("Inside add division modal", image);
+interface UpdateDivisionModalProps {
+  division: Division;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function UpdateDivisionModal({
+  division,
+  open,
+  onOpenChange,
+}: UpdateDivisionModalProps) {
+  const [image, setImage] = useState<File | null | string>(
+    division?.thumbnail || null,
+  );
+  const [updateDivision] = useUpdateDivisionMutation();
 
   const form = useForm({
     defaultValues: {
-      name: "",
-      description: "",
+      name: division.name,
+      description: division.description || "",
     },
   });
 
@@ -45,15 +62,20 @@ export function AddDivisionModal() {
     const formData = new FormData();
 
     formData.append("data", JSON.stringify(data));
-    formData.append("file", image as File);
+    if (image) {
+      formData.append("file", image);
+    }
 
     try {
-      const res = await addDivision(formData).unwrap();
+      const res = await updateDivision({
+        id: division._id,
+        data: formData,
+      }).unwrap();
 
       if (res?.success) {
-        toast.success(res?.message || "Division Added");
+        toast.success(res?.message || "Division Updated");
       }
-      setOpen(false);
+      onOpenChange(false);
     } catch (err) {
       toast.error(
         getErrorMessage(err as FetchBaseQueryError | SerializedError),
@@ -62,18 +84,20 @@ export function AddDivisionModal() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>Add Division</Button>
+        <Button size="icon" variant="outline">
+          <Pencil className="w-4 h-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Division</DialogTitle>
+          <DialogTitle>Update Division</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
             className="space-y-5"
-            id="add-division"
+            id="update-division"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
@@ -104,14 +128,17 @@ export function AddDivisionModal() {
             />
           </form>
 
-          <SingleImageUploader onChange={setImage} />
+          <SingleImageUploader
+            initialImage={image as string}
+            onChange={setImage}
+          />
         </Form>
 
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button disabled={!image} type="submit" form="add-division">
+          <Button type="submit" form="update-division">
             Save changes
           </Button>
         </DialogFooter>

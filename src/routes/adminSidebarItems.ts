@@ -1,5 +1,5 @@
 import AddTour from "@/components/modules/Admin/Tour/AddTour";
-import ManageDivision from "@/pages/Admin/AddDivision";
+import ManageDivision from "@/pages/Admin/ManageDivision";
 import ManageTour from "@/pages/Admin/ManageTour";
 // import ManageTour from "@/components/modules/Admin/Tour/AddTour";
 import ManageTourType from "@/pages/Admin/ManageTourType";

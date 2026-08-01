@@ -37,7 +37,7 @@ const ManageTourType = () => {
     }
   };
 
-  const totalPage = data?.meta?.totalPage || 2;
+  const totalPage = data?.meta?.totalPage || 1;
 
   const columns: Column<TourType>[] = [
     {
