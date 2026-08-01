@@ -38,6 +38,7 @@ import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import {
   useGetSingleTourQuery,
   useGetTourTypesQuery,
+  useUpdateTourMutation,
 } from "@/redux/features/Tour/tour.api";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -90,7 +91,7 @@ export default function UpdateTour() {
   const { data: divisionData, isLoading: divisionLoading } =
     useGetDivisionsQuery(undefined);
   const { data: tourTypeData } = useGetTourTypesQuery(undefined);
-  //   const [updateTour] = useUpdateTourMutation();
+  const [updateTour] = useUpdateTourMutation();
 
   const divisionOptions = divisionData?.map(
     (item: { _id: string; name: string }) => ({
@@ -236,17 +237,14 @@ export default function UpdateTour() {
       }
     });
 
-    console.log({ id: tourId, data: formData });
     try {
-      console.log(JSON.stringify(tourData, null, 2));
+      const res = await updateTour({ id: tourId, data: formData }).unwrap();
 
-      //   const res = await updateTour({ id: tourId, data: formData }).unwrap();
-      //   if (res.success) {
-      //     toast.success("Tour updated", { id: toastId });
-      //     navigate("/admin/manage-tour");
-      //   } else {
-      //     toast.error("Something went wrong", { id: toastId });
-      //   }
+      if (res.success) {
+        toast.success(res?.message || "Tour updated", { id: toastId });
+
+        navigate("/admin/manage-tour");
+      }
     } catch (err) {
       toast.error(
         getErrorMessage(err as FetchBaseQueryError | SerializedError),
@@ -353,27 +351,30 @@ export default function UpdateTour() {
                   render={({ field }) => (
                     <FormItem className="flex-1 ">
                       <FormLabel>Division</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={divisionLoading}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select Tour Division" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {divisionOptions?.map(
-                            (item: { label: string; value: string }) => (
-                              <SelectItem key={item.value} value={item.value}>
-                                {item.label}
-                              </SelectItem>
-                            ),
-                          )}
-                        </SelectContent>
-                      </Select>
-
+                      {divisionOptions && field.value ? (
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={divisionLoading}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select Tour Division" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {divisionOptions?.map(
+                              (item: { label: string; value: string }) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="h-9 rounded-md border bg-muted animate-pulse" />
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
@@ -384,28 +385,32 @@ export default function UpdateTour() {
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormLabel>Tour Type</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select Tour Type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {tourTypeOptions?.map(
-                            (option: { value: string; label: string }) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ),
-                          )}
-                        </SelectContent>
-                      </Select>
+                      {tourTypeOptions && field.value ? (
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select Tour Type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {tourTypeOptions.map(
+                              (option: { value: string; label: string }) => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="h-9 rounded-md border bg-muted animate-pulse" />
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
