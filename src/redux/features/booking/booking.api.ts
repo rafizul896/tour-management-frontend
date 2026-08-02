@@ -10,15 +10,52 @@ export const bookingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["BOOKING"],
     }),
-    getTourTypes: builder.query({
-      query: () => ({
-        url: "/tour/tour-types",
+    getAllBookings: builder.query({
+      query: (params) => ({
+        url: "/booking",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["BOOKING"],
+    }),
+
+    // Get Single Booking
+    getSingleBooking: builder.query({
+      query: (id) => ({
+        url: `/booking/${id}`,
         method: "GET",
       }),
-      providesTags: ["TOUR"],
+      providesTags: ["BOOKING"],
       transformResponse: (response) => response.data,
+    }),
+
+    // Get My Bookings
+    getMyBookings: builder.query({
+      query: (params) => ({
+        url: "/booking/my-bookings",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["BOOKING"],
+      transformResponse: (response) => response.data,
+    }),
+
+    // Update Booking Status
+    updateBookingStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/booking/${id}/status`,
+        method: "PATCH",
+        data: { status },
+      }),
+      invalidatesTags: ["BOOKING"],
     }),
   }),
 });
 
-export const { useCreateBookingMutation } = bookingApi;
+export const {
+  useCreateBookingMutation,
+  useGetAllBookingsQuery,
+  useGetSingleBookingQuery,
+  useGetMyBookingsQuery,
+  useUpdateBookingStatusMutation,
+} = bookingApi;
