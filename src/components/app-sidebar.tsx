@@ -21,7 +21,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData } = useUserInfoQuery(undefined);
   const location = useLocation();
 
-
   const data = {
     navMain: getSidebarItems(userData?.role),
   };
@@ -65,7 +64,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarRail />
 
-      {/* <div className="border-t p-4">
+      <div className="border-t p-4">
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
             <span className="text-sm font-semibold text-primary">
@@ -79,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </p>
           </div>
         </div>
-      </div> */}
+      </div>
     </Sidebar>
   );
 }

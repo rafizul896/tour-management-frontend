@@ -64,6 +64,13 @@ export const authApi = baseApi.injectEndpoints({
       providesTags: ["USER"],
       transformResponse: (res) => res.data,
     }),
+    changePassword: builder.mutation({
+      query: ({ oldPassword, newPassword }) => ({
+        url: "/auth/change-password",
+        method: "PATCH",
+        data: { oldPassword, newPassword },
+      }),
+    }),
   }),
 });
 
@@ -74,6 +81,7 @@ export const {
   useVerifyOtpMutation,
   useUserInfoQuery,
   useLogoutMutation,
+  useChangePasswordMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
 } = authApi;

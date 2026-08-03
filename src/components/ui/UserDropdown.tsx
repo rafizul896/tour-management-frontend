@@ -20,7 +20,7 @@ import { role } from "@/constants/role";
 const links = [
   { href: "/admin", role: role.admin },
   { href: "/admin", role: role.superAdmin },
-  { href: "/user/profile", role: role.user },
+  { href: "/user", role: role.user },
   { href: "/guide", role: role.guide },
 ];
 
@@ -55,7 +55,7 @@ const UserDropdown = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to={"/my-profile"} className="cursor-pointer">
+          <Link to={"/dashboard/profile"} className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             Profile
           </Link>

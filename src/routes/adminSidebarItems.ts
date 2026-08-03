@@ -1,11 +1,11 @@
-import ManageBooking from "@/pages/Admin/ManageBooking";
-import ManageDivision from "@/pages/Admin/ManageDivision";
-import ManageTour from "@/pages/Admin/ManageTour";
-import ManageTourType from "@/pages/Admin/ManageTourType";
+import ManageBooking from "@/pages/dashboard/Admin/ManageBooking";
+import ManageDivision from "@/pages/dashboard/Admin/ManageDivision";
+import ManageTour from "@/pages/dashboard/Admin/ManageTour";
+import ManageTourType from "@/pages/dashboard/Admin/ManageTourType";
 import { ISidebarItem } from "@/types";
 import { lazy } from "react";
 
-const Analytics = lazy(() => import("@/pages/Admin/Analytics"));
+const Analytics = lazy(() => import("@/pages/dashboard/Admin/Analytics"));
 
 export const adminSidebarItems: ISidebarItem[] = [
   {
