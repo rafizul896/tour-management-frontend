@@ -14,20 +14,21 @@ import {
 import Logo from "@/assets/icons/Logo";
 import { Link, useLocation } from "react-router";
 import { getSidebarItems } from "@/utils/getSidebarItems";
-import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { cn } from "@/lib/utils";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData } = useUserInfoQuery(undefined);
   const location = useLocation();
 
+
   const data = {
-    navMain: getSidebarItems(userData?.data?.role),
+    navMain: getSidebarItems(userData?.role),
   };
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="items-center">
+      <SidebarHeader className="ml-2">
         <Link to="/">
           <Logo />
         </Link>
@@ -62,8 +63,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
-
       <SidebarRail />
+
+      {/* <div className="border-t p-4">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <span className="text-sm font-semibold text-primary">
+              {userData?.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <p className="text-sm font-medium truncate">{userData.name}</p>
+            <p className="text-xs text-muted-foreground capitalize">
+              {userData?.role.toLowerCase()}
+            </p>
+          </div>
+        </div>
+      </div> */}
     </Sidebar>
   );
 }

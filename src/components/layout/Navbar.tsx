@@ -111,7 +111,7 @@ export default function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle />
-          {data?.data?.email ? <UserDropdown /> : <AuthDialog />}
+          {data?.email ? <UserDropdown /> : <AuthDialog />}
         </div>
       </div>
     </header>

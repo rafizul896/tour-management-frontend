@@ -1,20 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { useCreateBookingMutation } from "@/redux/features/booking/booking.api";
-import { useGetAllToursQuery } from "@/redux/features/Tour/tour.api";
+import { useGetSingleTourQuery } from "@/redux/features/Tour/tour.api";
+import { getErrorMessage } from "@/utils/getErrorMessage";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
 
 export default function Booking() {
   const [guestCount, setGuestCount] = useState(1);
   const [totalAmount, setTotalAmount] = useState(0);
-
-  console.log(totalAmount);
+  const navigate = useNavigate();
 
   const { id } = useParams();
-  const { data, isLoading, isError } = useGetAllToursQuery({ _id: id });
+  const { data, isLoading, isError } = useGetSingleTourQuery(id);
   const [createBooking] = useCreateBookingMutation();
 
-  const tourData = data?.[0];
+  const tourData = data;
 
   useEffect(() => {
     if (!isLoading && !isError) {
@@ -42,11 +45,23 @@ export default function Booking() {
 
     try {
       const res = await createBooking(bookingData).unwrap();
+
       if (res.success) {
         window.open(res.data.paymentUrl);
       }
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      if (
+        err?.data?.message?.trim() ===
+        "Please Update your profile to book a tour"
+      ) {
+        navigate("/dashboard/my-profile", {
+          state: { from: `/booking/${id}` },
+        });
+      }
+
+      toast.error(
+        getErrorMessage(err as FetchBaseQueryError | SerializedError),
+      );
     }
   };
 
@@ -68,7 +83,7 @@ export default function Booking() {
         </div>
       )}
 
-      {!isLoading && !isError && data!.length > 0 && (
+      {!isLoading && !isError && data && (
         <>
           {/* Left Section - Tour Summary */}
           <div className="flex-1 space-y-6">
@@ -104,7 +119,7 @@ export default function Booking() {
             <div>
               <h3 className="text-xl font-semibold mb-2">What's Included</h3>
               <ul className="list-disc list-inside text-sm space-y-1">
-                {tourData?.included.map((item, index) => (
+                {tourData?.included.map((item: string[], index: number) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
@@ -113,7 +128,7 @@ export default function Booking() {
             <div>
               <h3 className="text-xl font-semibold mb-2">Tour Plan</h3>
               <ol className="list-decimal list-inside text-sm space-y-1">
-                {tourData?.tourPlan.map((plan, index) => (
+                {tourData?.tourPlan.map((plan: string[], index: number) => (
                   <li key={index}>{plan}</li>
                 ))}
               </ol>
@@ -177,58 +192,3 @@ export default function Booking() {
     </div>
   );
 }
-
-//  const tourData: ITourPackage = {
-//    _id: "1",
-//    title: "Magical Santorini Island Adventure",
-//    description:
-//      "Experience the breathtaking beauty of Santorini with its iconic white-washed buildings, stunning sunsets, and crystal-clear waters. This 5-day adventure includes visits to traditional villages, wine tasting, and relaxation on unique volcanic beaches.",
-//    location: "Santorini, Greece",
-//    images: [
-//      "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=500&h=300&fit=crop",
-//      "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=500&h=300&fit=crop",
-//      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop",
-//    ],
-//    costFrom: 1299,
-//    maxGuest: 12,
-//    startDate: "2024-06-15",
-//    endDate: "2024-06-20",
-//    departureLocation: "Athens International Airport",
-//    arrivalLocation: "Santorini Airport",
-//    division: "Cyclades",
-//    tourType: "Cultural & Leisure",
-//    minAge: 18,
-//    amenities: [
-//      "Free WiFi",
-//      "Air Conditioning",
-//      "Swimming Pool Access",
-//      "24/7 Concierge",
-//      "Spa Services",
-//    ],
-//    included: [
-//      "Round-trip flights",
-//      "4-star hotel accommodation",
-//      "Daily breakfast",
-//      "Guided tours",
-//      "Wine tasting experience",
-//      "Sunset cruise",
-//    ],
-//    excluded: [
-//      "Travel insurance",
-//      "Lunch and dinner",
-//      "Personal expenses",
-//      "Optional activities",
-//      "Tips and gratuities",
-//    ],
-//    tourPlan: [
-//      "Arrival in Santorini and check-in to hotel",
-//      "Explore Fira town and enjoy welcome dinner",
-//      "Visit Oia village and watch famous sunset",
-//      "Wine tasting tour in traditional vineyards",
-//      "Relax at Red Beach and visit Akrotiri ruins",
-//      "Sunset sailing cruise and departure",
-//    ],
-//    slug: "magical-santorini-island-adventure",
-//    createdAt: "2024-01-15T10:30:00.000Z",
-//    updatedAt: "2024-02-10T14:45:00.000Z",
-//  };

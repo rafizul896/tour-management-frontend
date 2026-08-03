@@ -61,6 +61,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["USER"],
+      transformResponse: (res) => res.data,
     }),
   }),
 });

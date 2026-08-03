@@ -20,6 +20,7 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import AddTour from "@/components/modules/Admin/Tour/AddTour";
 import UpdateTour from "@/components/modules/Admin/Tour/UpdateTour";
+import NotFound from "@/pages/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +88,10 @@ export const router = createBrowserRouter([
   {
     Component: Unauthorized,
     path: "/unauthorized",
+  },
+  {
+    Component: NotFound,
+    path: "*",
   },
   {
     Component: Success,

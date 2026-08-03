@@ -32,7 +32,7 @@ export const tourApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["TOUR"],
-      transformResponse: (response) => response.data,
+      transformResponse: (res) => res.data,
     }),
     getAllTours: builder.query<
       IResponse<ITourPackage[]>,
@@ -51,6 +51,7 @@ export const tourApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["TOUR"],
+      transformResponse: (res) => res.data,
     }),
     deleteTour: builder.mutation({
       query: (id) => ({

@@ -19,8 +19,7 @@ export default function TourDetails() {
     },
   );
 
-  const tourData:ITourPackage = data?.data;
-  console.log(tourData)
+  const tourData:ITourPackage = data;
 
   if (isLoading) {
     return <p>Loading...</p>;

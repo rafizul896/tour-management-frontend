@@ -20,20 +20,20 @@ import { role } from "@/constants/role";
 const links = [
   { href: "/admin", role: role.admin },
   { href: "/admin", role: role.superAdmin },
-  { href: "/user", role: role.user },
+  { href: "/user/profile", role: role.user },
   { href: "/guide", role: role.guide },
 ];
 
 const UserDropdown = () => {
-  const { data } = useUserInfoQuery(undefined);
+  const { data:userInfo } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
-  const userInfo = data?.data;
 
   const handleLogout = async () => {
     await logout(undefined);
     dispatch(authApi.util.resetApiState());
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
