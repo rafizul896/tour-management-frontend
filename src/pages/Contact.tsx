@@ -29,10 +29,7 @@ const contactSchema = z.object({
   email: z.email(),
   phone: z.string().optional(),
   reason: z.string().min(1, { error: "Select a reason" }),
-  message: z
-    .string()
-    .min(10, { error: "Give us a bit more detail" })
-    .max(1000),
+  message: z.string().min(10, { error: "Give us a bit more detail" }).max(1000),
 });
 
 const reasons = [
@@ -83,7 +80,7 @@ const quickLinks = [
     title: "Want to guide with us?",
     description: "Apply with your NID and start listing tours.",
     cta: "Apply as a guide",
-    href: "/become-a-guide",
+    href: "/dashboard/apply-guide",
   },
   {
     icon: Users,
@@ -94,7 +91,7 @@ const quickLinks = [
   },
 ];
 
-const Contact =()  => {
+const Contact = () => {
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
@@ -122,22 +119,20 @@ const Contact =()  => {
     <div className="flex flex-col">
       {/* Header */}
       <section className="border-b border-border bg-muted/40">
-        <div className="mx-auto max-w-5xl px-6 py-20 text-center">
-          <span className="text-sm font-medium text-primary">
-            Get in touch
-          </span>
+        <div className="container mx-auto px-6 py-20 text-center">
+          <span className="text-sm font-medium text-primary">Get in touch</span>
           <h1 className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Questions before your next trip?
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Whether it's a booking, a guide application, or a group trip
-            across divisions — reach us here and a real person will answer.
+            Whether it's a booking, a guide application, or a group trip across
+            divisions — reach us here and a real person will answer.
           </p>
         </div>
       </section>
 
       {/* Quick links */}
-      <section className="mx-auto max-w-5xl px-6 py-16">
+      <section className="container mx-auto px-6 py-16">
         <div className="grid gap-5 sm:grid-cols-3">
           {quickLinks.map(({ icon: Icon, title, description, cta, href }) => (
             <Card key={title} className="border-border bg-card">
@@ -164,11 +159,8 @@ const Contact =()  => {
       </section>
 
       {/* Contact details + form */}
-      <section
-        id="contact-form"
-        className="border-y border-border bg-muted/40"
-      >
-        <div className="mx-auto grid max-w-5xl gap-10 px-6 py-20 lg:grid-cols-5">
+      <section id="contact-form" className="border-y border-border bg-muted/40">
+        <div className="mx-auto grid container  gap-10 px-6 py-20 lg:grid-cols-5">
           {/* Details */}
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
@@ -248,10 +240,7 @@ const Contact =()  => {
                         <FormItem>
                           <FormLabel>Phone (optional)</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="+880 1XXX-XXXXXX"
-                              {...field}
-                            />
+                            <Input placeholder="+880 1XXX-XXXXXX" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -320,6 +309,6 @@ const Contact =()  => {
       </section>
     </div>
   );
-}
+};
 
-export default Contact
+export default Contact;

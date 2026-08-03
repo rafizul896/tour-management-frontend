@@ -71,7 +71,7 @@ const About = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/30" />
         </div>
 
-        <div className="relative mx-auto flex max-w-5xl flex-col items-start gap-6 px-6 py-28 sm:py-36">
+        <div className="container relative mx-auto flex  flex-col items-start gap-6 px-6 py-28 sm:py-36">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
             <Compass className="h-3.5 w-3.5 text-primary" />
             Built for travel across all 8 divisions of Bangladesh
@@ -95,7 +95,7 @@ const About = () => {
               <Link to="/tours">Browse tours</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link to="/become-a-guide">Become a guide</Link>
+              <Link to="/dashboard/apply-guide">Become a guide</Link>
             </Button>
           </div>
         </div>
@@ -103,7 +103,7 @@ const About = () => {
 
       {/* Stats */}
       <section className="border-b border-border bg-card">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-px overflow-hidden border-x border-border bg-border sm:grid-cols-4">
+        <div className="mx-auto grid container grid-cols-2 gap-px overflow-hidden border-x border-border bg-border sm:grid-cols-4">
           {stats.map(({ label, value, icon: Icon }) => (
             <div
               key={label}
@@ -120,7 +120,7 @@ const About = () => {
       </section>
 
       {/* Divisions — signature element, grounded in the Division model */}
-      <section className="mx-auto max-w-5xl px-6 py-24">
+      <section className="mx-auto container px-6 py-24">
         <div className="mb-14 max-w-xl">
           <span className="text-sm font-medium text-primary">
             Where we operate
@@ -162,7 +162,7 @@ const About = () => {
 
       {/* Trust / how it works */}
       <section className="border-y border-border bg-muted/40">
-        <div className="mx-auto max-w-5xl px-6 py-24">
+        <div className="mx-auto container px-6 py-24">
           <div className="mb-14 max-w-xl">
             <span className="text-sm font-medium text-primary">
               Why it's different
@@ -193,7 +193,7 @@ const About = () => {
       </section>
 
       {/* Guide recruitment */}
-      <section className="mx-auto max-w-5xl px-6 py-24">
+      <section className="mx-auto container px-6 py-24">
         <div className="flex flex-col items-start gap-6 rounded-xl border border-border bg-card p-8 sm:flex-row sm:items-center sm:justify-between sm:p-12">
           <div>
             <span className="text-sm font-medium text-primary">
@@ -208,14 +208,14 @@ const About = () => {
             </p>
           </div>
           <Button size="lg" asChild>
-            <Link to="/become-a-guide">Apply as a guide</Link>
+            <Link to="/dashboard/apply-guide">Apply as a guide</Link>
           </Button>
         </div>
       </section>
 
       {/* CTA */}
       <section className="border-t border-border bg-primary">
-        <div className="mx-auto flex max-w-5xl flex-col items-start gap-6 px-6 py-20 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex container flex-col items-start gap-6 px-6 py-20 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-2xl font-bold text-primary-foreground sm:text-3xl">
               Your next trip is already mapped.

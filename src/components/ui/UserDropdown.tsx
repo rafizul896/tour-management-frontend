@@ -16,7 +16,7 @@ import {
 } from "@/redux/features/auth/auth.api";
 import { useAppDispatch } from "@/redux/hook";
 import { role } from "@/constants/role";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Avatar, AvatarImage } from "./avatar";
 
 const links = [
   { href: "/admin", role: role.admin },
@@ -79,12 +79,20 @@ const UserDropdown = () => {
             ),
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleLogout}
-          className="cursor-pointer text-red-600"
-        >
-          <Button onClick={handleLogout} variant="outline" className="text-sm">
+        <DropdownMenuItem>
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            size={"sm"}
+            className="cursor-pointer text-red-600 hover:bg-red-500 hover:text-white"
+          >
             Logout
+          </Button>
+
+          <Button variant="default" size={"sm"}>
+            <Link to="/dashboard/apply-guide">
+            Apply for Guide
+            </Link>
           </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
