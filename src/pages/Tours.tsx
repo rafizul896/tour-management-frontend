@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
-
 import { useGetAllToursQuery } from "@/redux/features/Tour/tour.api";
-
 import { Link, useSearchParams } from "react-router";
-
 import TourFilters from "@/components/modules/Tours/TourFilters";
 
 export default function Tours() {

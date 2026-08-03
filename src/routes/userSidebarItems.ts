@@ -1,4 +1,4 @@
-import Bookings from "@/pages/User/Bookings";
+import Bookings from "@/pages/User/MyBookings";
 import { ISidebarItem } from "@/types";
 
 export const userSidebarItems: ISidebarItem[] = [

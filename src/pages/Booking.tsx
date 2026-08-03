@@ -108,7 +108,7 @@ export default function Booking() {
                   {tourData?.endDate}
                 </div>
                 <div>
-                  <strong>Tour Type:</strong> {tourData?.tourType}
+                  <strong>Tour Type:</strong> {tourData?.tourType.name}
                 </div>
                 <div>
                   <strong>Max Guests:</strong> {tourData?.maxGuest}
@@ -169,7 +169,7 @@ export default function Booking() {
                 <div className="border-t pt-4">
                   <div className="flex justify-between text-sm mb-2">
                     <span>Price per person:</span>
-                    <span>${tourData?.costFrom}</span>
+                    <span>৳ {tourData?.costFrom}</span>
                   </div>
                   <div className="flex justify-between text-sm mb-2">
                     <span>Guests:</span>
@@ -177,7 +177,7 @@ export default function Booking() {
                   </div>
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total Amount:</span>
-                    <span>${totalAmount}</span>
+                    <span>৳ {totalAmount}</span>
                   </div>
                 </div>
 

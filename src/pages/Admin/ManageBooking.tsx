@@ -72,6 +72,7 @@ const ManageBooking = () => {
 
   const handleStatusChange = async (bookingId: string, status: string) => {
     const toastId = toast.loading("Updating status...");
+    console.log(status);
     try {
       const res = await updateBookingStatus({
         id: bookingId,
