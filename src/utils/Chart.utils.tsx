@@ -10,14 +10,15 @@ export const CHART_COLORS = [
   "#4b5563", // slate
 ];
 
-export const colorForIndex = (i: number) => CHART_COLORS[i % CHART_COLORS.length];
+export const colorForIndex = (i: number) =>
+  CHART_COLORS[i % CHART_COLORS.length];
 
 export const formatNumber = (n: number | undefined | null) =>
   typeof n === "number" ? n.toLocaleString("en-US") : "0";
 
 export const formatCurrency = (n: number | undefined | null) =>
   typeof n === "number"
-    ? n.toLocaleString("en-US", { style: "currency", currency: "USD" })
+    ? n.toLocaleString("en-US", { style: "currency", currency: "BDT" })
     : "$0";
 
 export const formatCompact = (n: number | undefined | null) =>
@@ -28,7 +29,7 @@ export const formatCompact = (n: number | undefined | null) =>
 // Turns a mongo _id-keyed group-by-status aggregate result like
 // [{ _id: "PENDING", count: 4 }] into chart-friendly { name, value } pairs.
 export const toChartData = (
-  rows: { _id: string; count: number }[] | undefined
+  rows: { _id: string; count: number }[] | undefined,
 ) =>
   (rows ?? []).map((r) => ({
     name: r._id ?? "Unknown",

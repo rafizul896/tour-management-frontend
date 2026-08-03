@@ -71,6 +71,13 @@ export const authApi = baseApi.injectEndpoints({
         data: { oldPassword, newPassword },
       }),
     }),
+    updateProfile: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `/user/${id}`,
+        method: "PATCH",
+        data: formData,
+      }),
+    }),
   }),
 });
 
@@ -84,4 +91,5 @@ export const {
   useChangePasswordMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useUpdateProfileMutation,
 } = authApi;

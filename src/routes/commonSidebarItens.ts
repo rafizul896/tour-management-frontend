@@ -1,4 +1,4 @@
-import ChangePassword from "@/pages/Auth/ChangePassword";
+import ChangePassword from "@/pages/dashboard/Common/ChangePassword";
 import Profile from "@/pages/dashboard/Common/Profile";
 import { ISidebarItem } from "@/types";
 

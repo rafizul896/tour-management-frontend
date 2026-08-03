@@ -16,6 +16,7 @@ import {
 } from "@/redux/features/auth/auth.api";
 import { useAppDispatch } from "@/redux/hook";
 import { role } from "@/constants/role";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 
 const links = [
   { href: "/admin", role: role.admin },
@@ -25,7 +26,7 @@ const links = [
 ];
 
 const UserDropdown = () => {
-  const { data:userInfo } = useUserInfoQuery(undefined);
+  const { data: userInfo } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
 
@@ -38,9 +39,15 @@ const UserDropdown = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="rounded-full">
-          <span className="text-sm font-semibold">
-            {userInfo.name.charAt(0).toUpperCase()}
-          </span>
+          {userInfo?.picture ? (
+            <Avatar className="border bg-muted">
+              <AvatarImage src={userInfo?.picture} alt={userInfo?.name} />
+            </Avatar>
+          ) : (
+            <span className="text-sm font-semibold">
+              {userInfo.name.charAt(0).toUpperCase()}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
