@@ -23,6 +23,7 @@ import UpdateTour from "@/components/modules/Admin/Tour/UpdateTour";
 import NotFound from "@/pages/NotFound";
 import { commonSidebarItems } from "./commonSidebarItens";
 import ApplyForGuide from "@/pages/ApplyForGuide";
+import { guideSidebarItems } from "./guideSidebarItems";
 
 export const router = createBrowserRouter([
   {
@@ -88,7 +89,15 @@ export const router = createBrowserRouter([
       {
         Component: ApplyForGuide,
         path: "/dashboard/apply-guide",
-      }
+      },
+    ],
+  },
+  {
+    Component: withAuth(DashboardLayout),
+    path: "/guide",
+    children: [
+      { index: true, element: <Navigate to="/dashboard/profile" /> },
+      ...generateRoutes(guideSidebarItems),
     ],
   },
   {

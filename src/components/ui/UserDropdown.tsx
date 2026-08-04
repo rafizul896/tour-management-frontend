@@ -22,7 +22,7 @@ const links = [
   { href: "/admin", role: role.admin },
   { href: "/admin", role: role.superAdmin },
   { href: "/user", role: role.user },
-  { href: "/guide", role: role.guide },
+  { href: "/dashboard/profile", role: role.guide },
 ];
 
 const UserDropdown = () => {

@@ -11,6 +11,8 @@ export default function Tours() {
 
   const { data } = useGetAllToursQuery({ division, tourType });
 
+
+
   return (
     <div className="container mx-auto px-5 py-8 grid grid-cols-12 gap-5">
       <TourFilters />

@@ -52,6 +52,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
+import { useGetAllGuideApplicationsQuery } from "@/redux/features/guide/guide.api";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -70,6 +71,7 @@ const formSchema = z.object({
   minAge: z.string().min(1, "Minimum age is required"),
   division: z.string().min(1, "Division is required"),
   tourType: z.string().min(1, "Tour type is required"),
+  guides: z.array(z.string()).optional(),
 });
 
 const toFieldArray = (arr?: string[]) =>
@@ -127,6 +129,7 @@ export default function UpdateTour() {
       minAge: "",
       division: "",
       tourType: "",
+      guides: [],
     },
   });
 
@@ -150,8 +153,17 @@ export default function UpdateTour() {
       tourPlan: toFieldArray(tour.tourPlan),
       maxGuest: String(tour.maxGuest ?? ""),
       minAge: String(tour.minAge ?? ""),
-      division: tour.division ?? tour.division ?? "",
-      tourType: tour.tourType ?? tour.tourType ?? "",
+      division:
+        typeof tour.division === "string"
+          ? tour.division
+          : (tour.division?._id ?? ""),
+      tourType:
+        typeof tour.tourType === "string"
+          ? tour.tourType
+          : (tour.tourType?._id ?? ""),
+      guides: Array.isArray(tour.guides)
+        ? tour.guides.map((g: any) => (typeof g === "string" ? g : g?._id))
+        : [],
     });
 
     if (tour?.images) {
@@ -160,6 +172,20 @@ export default function UpdateTour() {
     }
     setImagesReady(true);
   }, [tourData, form]);
+
+  const selectedDivision = form.watch("division");
+
+  const { data: guideAppData } = useGetAllGuideApplicationsQuery(
+    {
+      division: selectedDivision,
+      status: "APPROVED",
+    },
+    {
+      skip: !selectedDivision,
+    },
+  );
+
+  const guidData = guideAppData?.data;
 
   const {
     fields: includedFields,
@@ -431,6 +457,72 @@ export default function UpdateTour() {
                   )}
                 />
               </div>
+
+              <div>
+                <FormField
+                  control={form.control}
+                  name="guides"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Guides</FormLabel>
+                      <FormControl>
+                        <div className="border rounded-md p-3 max-h-56 overflow-y-auto space-y-2">
+                          {!selectedDivision && (
+                            <p className="text-sm text-muted-foreground">
+                              Select a division first to see available guides.
+                            </p>
+                          )}
+
+                          {selectedDivision && guidData?.length === 0 && (
+                            <p className="text-sm text-muted-foreground">
+                              No approved guides found for this division.
+                            </p>
+                          )}
+
+                          {guidData?.map((application: any) => {
+                            const guideId =
+                              application.guide?._id ?? application._id;
+                            const guideName = application.user?.name
+                              ? application.user.name
+                              : "Unknown guide";
+                            const checked = field.value?.includes(guideId);
+
+                            return (
+                              <label
+                                key={guideId}
+                                className="flex items-center gap-2 text-sm cursor-pointer"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      field.onChange([
+                                        ...(field.value ?? []),
+                                        guideId,
+                                      ]);
+                                    } else {
+                                      field.onChange(
+                                        field.value?.filter(
+                                          (id: string) => id !== guideId,
+                                        ),
+                                      );
+                                    }
+                                  }}
+                                  className="h-4 w-4"
+                                />
+                                {guideName}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <div className="flex gap-5">
                 <FormField
                   control={form.control}

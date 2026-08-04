@@ -52,19 +52,23 @@ const ManageUsers = () => {
   const { data: guideApplications } =
     useGetAllGuideApplicationsQuery(undefined);
 
+    console.log(guideApplications)
+
   // The application (+ owning user) currently open in the details modal
   const [activeApplication, setActiveApplication] = useState<{
     application: GuideApplication;
     user: User;
   } | null>(null);
-
-  const applicationByUser = useMemo(() => {
-    const map = new Map<string, GuideApplication>();
-    (guideApplications?.data ?? []).forEach((app: GuideApplication) => {
-      map.set(app.user, app);
-    });
-    return map;
-  }, [guideApplications]);
+  
+const applicationByUser = useMemo(() => {
+  const map = new Map<string, GuideApplication>();
+  (guideApplications?.data ?? []).forEach((app: GuideApplication) => {
+    const userId =
+      typeof app.user === "string" ? app.user : (app.user as any)?._id;
+    if (userId) map.set(userId, app);
+  });
+  return map;
+}, [guideApplications]);
 
   const totalPage = data?.meta?.totalPage || 1;
 
