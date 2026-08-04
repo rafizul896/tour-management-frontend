@@ -2,6 +2,7 @@ import ManageBooking from "@/pages/dashboard/Admin/ManageBooking";
 import ManageDivision from "@/pages/dashboard/Admin/ManageDivision";
 import ManageTour from "@/pages/dashboard/Admin/ManageTour";
 import ManageTourType from "@/pages/dashboard/Admin/ManageTourType";
+import ManageUsers from "@/pages/dashboard/Admin/ManageUser";
 import { ISidebarItem } from "@/types";
 import { lazy } from "react";
 
@@ -40,6 +41,11 @@ export const adminSidebarItems: ISidebarItem[] = [
         title: "Booking",
         url: "/admin/manage-booking",
         component: ManageBooking,
+      },
+      {
+        title: "User",
+        url: "/admin/manage-user",
+        component: ManageUsers,
       },
     ],
   },

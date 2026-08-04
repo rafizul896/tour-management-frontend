@@ -14,11 +14,15 @@ export const guideApi = baseApi.injectEndpoints({
 
     // PATCH /guide/approve/:id
     updateApplicationStatus: builder.mutation({
-      query: ({ id, data }) => ({
-        url: `/guide/approve/${id}`,
-        method: "PATCH",
-        data,
-      }),
+      query: ({ id, status }) => {
+        return {
+          url: `/guide/approve/${id}`,
+          method: "PATCH",
+          data: {
+            status,
+          },
+        };
+      },
       invalidatesTags: ["GUIDE"],
     }),
 

@@ -88,12 +88,11 @@ const UserDropdown = () => {
           >
             Logout
           </Button>
-
-          <Button variant="default" size={"sm"}>
-            <Link to="/dashboard/apply-guide">
-            Apply for Guide
-            </Link>
-          </Button>
+          {userInfo?.role === "USER" && (
+            <Button variant="default" size={"sm"}>
+              <Link to="/dashboard/apply-guide">Apply for Guide</Link>
+            </Button>
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -78,6 +78,14 @@ export const authApi = baseApi.injectEndpoints({
         data: formData,
       }),
     }),
+    getAllUsers: builder.query({
+      query: (params) => ({
+        url: "/user/all-users",
+        method: "GET",
+        params: params,
+      }),
+      providesTags: ["USER"],
+    }),
   }),
 });
 
@@ -92,4 +100,5 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useUpdateProfileMutation,
+  useGetAllUsersQuery
 } = authApi;
