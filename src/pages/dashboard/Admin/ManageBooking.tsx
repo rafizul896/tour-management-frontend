@@ -18,36 +18,7 @@ import {
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-
-export const BOOKING_STATUS = {
-  PENDING: "PENDING",
-  CANCEL: "CANCEL",
-  COMPLETE: "COMPLETE",
-  FAILED: "FAILED",
-} as const;
-
-type BookingStatus = keyof typeof BOOKING_STATUS;
-
-interface Booking {
-  _id: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  tour: {
-    _id: string;
-    title: string;
-  };
-  payment?: {
-    _id: string;
-    status: string;
-    amount: number;
-  };
-  guestCount: number;
-  status: BookingStatus;
-  createdAt: string;
-}
+import { Booking, BOOKING_STATUS, BookingStatus } from "@/types/Booking.type";
 
 const statusVariant: Record<
   BookingStatus,
