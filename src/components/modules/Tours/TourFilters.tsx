@@ -24,6 +24,7 @@ export default function TourFilters() {
 
   const { data: tourTypeData, isLoading: tourTypeIsLoading } =
     useGetTourTypesQuery({ limit: 1000, fields: "_id,name" });
+    console.log(tourTypeData)
 
   const divisionOption = divisionData?.map(
     (item: { _id: string; name: string }) => ({
@@ -32,12 +33,14 @@ export default function TourFilters() {
     })
   );
 
-  const tourTypeOptions = tourTypeData?.data?.map(
+  const tourTypeOptions = tourTypeData?.map(
     (item: { _id: string; name: string }) => ({
       label: item.name,
       value: item._id,
     })
   );
+
+  const hasActiveFilters = Boolean(selectedDivision || selectedTourType);
 
   const handleDivisionChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -59,58 +62,65 @@ export default function TourFilters() {
   };
 
   return (
-    <div className="col-span-3 w-full h-[500px] border border-muted rounded-md p-5 space-y-4">
+    <div className="w-full border border-muted rounded-md p-4 sm:p-5 space-y-4">
       <div className="flex justify-between items-center">
-        <h1>Filters</h1>
-        <Button size="sm" variant="outline" onClick={handleClearFilter}>
-          Clear Filter
-        </Button>
+        <h2 className="font-semibold">Filters</h2>
+        {hasActiveFilters && (
+          <Button size="sm" variant="outline" onClick={handleClearFilter}>
+            Clear
+          </Button>
+        )}
       </div>
-      <div>
-        <Label className="mb-2">Division to visit</Label>
-        <Select
-          onValueChange={(value) => handleDivisionChange(value)}
-          value={selectedDivision ? selectedDivision : ""}
-          disabled={divisionIsLoading}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Divisions</SelectLabel>
-              {divisionOption?.map((item: { value: string; label: string }) => (
-                <SelectItem key={item.value} value={item.value}>
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-      <div>
-        <Label className="mb-2">Tour Type</Label>
-        <Select
-          onValueChange={handleTourTypeChange}
-          value={selectedTourType ? selectedTourType : ""}
-          disabled={tourTypeIsLoading}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Divisions</SelectLabel>
-              {tourTypeOptions?.map(
-                (item: { value: string; label: string }) => (
+
+      {/* Two columns on mobile/tablet sidebar-off state, single column on desktop sidebar */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+        <div>
+          <Label className="mb-2 block">Division to visit</Label>
+          <Select
+            onValueChange={handleDivisionChange}
+            value={selectedDivision ?? ""}
+            disabled={divisionIsLoading}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All divisions" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Divisions</SelectLabel>
+                {divisionOption?.map((item: { value: string; label: string }) => (
                   <SelectItem key={item.value} value={item.value}>
                     {item.label}
                   </SelectItem>
-                )
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label className="mb-2 block">Tour Type</Label>
+          <Select
+            onValueChange={handleTourTypeChange}
+            value={selectedTourType ?? ""}
+            disabled={tourTypeIsLoading}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All tour types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Tour Types</SelectLabel>
+                {tourTypeOptions?.map(
+                  (item: { value: string; label: string }) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  )
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   );
