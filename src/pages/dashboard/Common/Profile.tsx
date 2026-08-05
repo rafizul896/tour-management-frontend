@@ -23,6 +23,7 @@ import {
   useUserInfoQuery,
 } from "@/redux/features/auth/auth.api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useLocation, useNavigate } from "react-router";
 
 interface ProfileFormValues {
   name: string;
@@ -33,6 +34,10 @@ interface ProfileFormValues {
 export default function Profile() {
   const { data, isLoading: isProfileLoading } = useUserInfoQuery(undefined);
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const fromBooking = location.state?.from;
+
 
   const user = data;
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -97,6 +102,9 @@ export default function Profile() {
       if (res.success) {
         toast.success("Profile updated successfully");
         setSelectedFile(null);
+        if (fromBooking) {
+          navigate(fromBooking); 
+        }
       }
     } catch (err) {
       toast.error(
@@ -146,7 +154,6 @@ export default function Profile() {
                 <AvatarImage
                   src={previewImage || user?.picture}
                   alt={user?.name}
-
                 />
                 <AvatarFallback className="bg-muted text-muted-foreground">
                   {initials || <User className="h-10 w-10" />}

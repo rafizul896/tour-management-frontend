@@ -69,7 +69,7 @@ export default function Booking() {
         err?.data?.message?.trim() ===
         "Please Update your profile to book a tour"
       ) {
-        navigate("/dashboard/my-profile", {
+        navigate("/dashboard/profile", {
           state: { from: `/booking/${id}` },
         });
       }
