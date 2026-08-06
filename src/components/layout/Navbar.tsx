@@ -29,22 +29,23 @@ export default function Navbar() {
   const { data } = useUserInfoQuery(undefined);
 
   return (
-    <header className="border-b sticky top-0 z-50 bg-background/95 backdrop-blur ">
-      <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-4">
+    <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between gap-4">
         {/* Left side */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* Mobile menu trigger */}
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                className="group size-8 md:hidden"
+                className="group size-9 md:hidden"
                 variant="ghost"
                 size="icon"
+                aria-label="Toggle menu"
               >
                 <svg
                   className="pointer-events-none"
-                  width={16}
-                  height={16}
+                  width={18}
+                  height={18}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -68,13 +69,18 @@ export default function Navbar() {
                 </svg>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-36 p-1 md:hidden">
+            <PopoverContent align="start" className="w-44 p-1.5 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
-                <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
+                <NavigationMenuList className="flex-col items-start gap-0.5">
                   {navigationLinks.map((link, index) => (
                     <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink asChild className="py-1.5">
-                        <Link to={link.href}>{link.label} </Link>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to={link.href}
+                          className="block w-full rounded-md px-2.5 py-2 text-sm font-medium hover:bg-muted transition-colors"
+                        >
+                          {link.label}
+                        </Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ))}
@@ -82,32 +88,39 @@ export default function Navbar() {
               </NavigationMenu>
             </PopoverContent>
           </Popover>
-          {/* Main nav */}
-          <div className="flex items-center gap-6">
-            <Link to="/" className="text-primary hover:text-primary/90">
-              <Logo />
-            </Link>
-            {/* Navigation menu */}
-            <NavigationMenu className="max-md:hidden">
-              <NavigationMenuList className="gap-2">
-                {navigationLinks.map((link, index) => (
-                  <React.Fragment key={index}>
-                    {link.role === "PUBLIC" && (
-                      <NavigationMenuItem>
-                        <NavigationMenuLink
-                          asChild
-                          className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+
+          {/* Logo */}
+          <Link
+            to="/"
+            className="text-primary hover:text-primary/90 transition-colors flex-shrink-0"
+          >
+            <Logo />
+          </Link>
+
+          {/* Desktop nav */}
+          <NavigationMenu className="max-md:hidden ml-2">
+            <NavigationMenuList className="gap-1">
+              {navigationLinks.map((link, index) => (
+                <React.Fragment key={index}>
+                  {link.role === "PUBLIC" && (
+                    <NavigationMenuItem>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to={link.href}
+                          className="relative px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
                         >
-                          <Link to={link.href}>{link.label}</Link>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    )}
-                  </React.Fragment>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+                          {link.label}
+                          <span className="absolute left-3 right-3 -bottom-0.5 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-full" />
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  )}
+                </React.Fragment>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
+
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle />

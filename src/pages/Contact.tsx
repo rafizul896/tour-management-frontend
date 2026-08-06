@@ -9,13 +9,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ArrowRight,
   Clock,
   Compass,
   Mail,
   MapPin,
+  MessageCircleQuestion,
   Phone,
   ShieldCheck,
   Users,
@@ -46,12 +55,14 @@ const contactDetails = [
     label: "Call us",
     value: "+880 1XXX-XXXXXX",
     hint: "Sat–Thu, 9:00 AM – 8:00 PM",
+    href: "tel:+8801XXXXXXXXX",
   },
   {
     icon: Mail,
     label: "Email us",
     value: "support@tourbd.com",
     hint: "We reply within 1 business day",
+    href: "mailto:support@tourbd.com",
   },
   {
     icon: MapPin,
@@ -118,10 +129,21 @@ const Contact = () => {
   return (
     <div className="flex flex-col">
       {/* Header */}
+
       <section className="border-b border-border bg-muted/40">
+        <div
+          className="absolute inset-0 -z-20"
+          style={{
+            background:
+              "radial-gradient(125% 125% at 50% 90%, var(--background) 52%, var(--primary) 100%)",
+          }}
+        ></div>
         <div className="container mx-auto px-6 py-20 text-center">
-          <span className="text-sm font-medium text-primary">Get in touch</span>
-          <h1 className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+            <MessageCircleQuestion className="h-3.5 w-3.5 text-primary" />
+            Get in touch
+          </span>
+          <h1 className="mx-auto mt-4 max-w-2xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Questions before your next trip?
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
@@ -135,34 +157,34 @@ const Contact = () => {
       <section className="container mx-auto px-6 py-16">
         <div className="grid gap-5 sm:grid-cols-3">
           {quickLinks.map(({ icon: Icon, title, description, cta, href }) => (
-            <Card key={title} className="border-border bg-card">
-              <CardContent className="flex flex-col gap-3 pt-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">{title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {description}
-                  </p>
-                </div>
-                <a
-                  href={href}
-                  className="mt-auto text-sm font-medium text-primary underline-offset-4 hover:underline"
-                >
-                  {cta} →
-                </a>
-              </CardContent>
-            </Card>
+            <a key={title} href={href} className="group block">
+              <Card className="h-full border-border bg-card transition-colors group-hover:border-primary/50">
+                <CardContent className="flex h-full flex-col gap-3 pt-6">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">{title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {description}
+                    </p>
+                  </div>
+                  <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
+                    {cta}
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                </CardContent>
+              </Card>
+            </a>
           ))}
         </div>
       </section>
 
       {/* Contact details + form */}
       <section id="contact-form" className="border-y border-border bg-muted/40">
-        <div className="mx-auto grid container  gap-10 px-6 py-20 lg:grid-cols-5">
+        <div className="mx-auto grid container gap-10 px-6 py-20 lg:grid-cols-5">
           {/* Details */}
-          <div className="lg:col-span-2">
+          <div className="order-2 lg:order-1 lg:col-span-2">
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
               Reach us directly
             </h2>
@@ -170,28 +192,42 @@ const Contact = () => {
               Prefer to skip the form? Use any of the channels below.
             </p>
 
-            <div className="mt-8 flex flex-col gap-6">
-              {contactDetails.map(({ icon: Icon, label, value, hint }) => (
-                <div key={label} className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {label}
-                    </span>
-                    <p className="text-sm font-semibold text-foreground">
-                      {value}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{hint}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="mt-8 flex flex-col gap-3">
+              {contactDetails.map(
+                ({ icon: Icon, label, value, hint, href }) => {
+                  const content = (
+                    <div className="flex gap-4 rounded-lg border border-transparent p-3 transition-colors hover:border-border hover:bg-card">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {label}
+                        </span>
+                        <p className="text-sm font-semibold text-foreground">
+                          {value}
+                        </p>
+                        <p className="text-xs text-muted-foreground">{hint}</p>
+                      </div>
+                    </div>
+                  );
+
+                  return href ? (
+                    <a key={label} href={href} className="-mx-3">
+                      {content}
+                    </a>
+                  ) : (
+                    <div key={label} className="-mx-3">
+                      {content}
+                    </div>
+                  );
+                },
+              )}
             </div>
           </div>
 
           {/* Form */}
-          <Card className="border-border bg-card lg:col-span-3">
+          <Card className="order-1 border-border bg-card lg:order-2 lg:col-span-3">
             <CardContent className="pt-6">
               <Form {...form}>
                 <form
@@ -204,7 +240,10 @@ const Contact = () => {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Full name</FormLabel>
+                          <FormLabel>
+                            Full name{" "}
+                            <span className="text-destructive">*</span>
+                          </FormLabel>
                           <FormControl>
                             <Input placeholder="Rafizul Islam" {...field} />
                           </FormControl>
@@ -218,7 +257,9 @@ const Contact = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>
+                            Email <span className="text-destructive">*</span>
+                          </FormLabel>
                           <FormControl>
                             <Input
                               type="email"
@@ -252,22 +293,27 @@ const Contact = () => {
                       name="reason"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Reason for contact</FormLabel>
-                          <FormControl>
-                            <select
-                              {...field}
-                              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
-                            >
-                              <option value="" disabled>
-                                Select a reason
-                              </option>
+                          <FormLabel>
+                            Reason for contact{" "}
+                            <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a reason" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
                               {reasons.map((r) => (
-                                <option key={r.value} value={r.value}>
+                                <SelectItem key={r.value} value={r.value}>
                                   {r.label}
-                                </option>
+                                </SelectItem>
                               ))}
-                            </select>
-                          </FormControl>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -279,7 +325,9 @@ const Contact = () => {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Message</FormLabel>
+                        <FormLabel>
+                          Message <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Tell us what you need help with..."
