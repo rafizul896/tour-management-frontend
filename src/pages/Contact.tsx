@@ -60,9 +60,9 @@ const contactDetails = [
   {
     icon: Mail,
     label: "Email us",
-    value: "support@tourbd.com",
+    value: "support@explorebangla.com",
     hint: "We reply within 1 business day",
-    href: "mailto:support@tourbd.com",
+    href: "mailto:support@explorebangla.com",
   },
   {
     icon: MapPin,
@@ -130,7 +130,7 @@ const Contact = () => {
     <div className="flex flex-col">
       {/* Header */}
 
-      <section className="border-b border-border bg-muted/40">
+      <section className="relative border-b border-border bg-muted/40">
         <div
           className="absolute inset-0 -z-20"
           style={{
@@ -245,7 +245,7 @@ const Contact = () => {
                             <span className="text-destructive">*</span>
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Rafizul Islam" {...field} />
+                            <Input placeholder="Enter Your Name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

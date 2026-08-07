@@ -56,10 +56,20 @@ export function LoginForm({
         navigate("/");
         onLoginSuccess();
       }
-    } catch (err) {
+    } catch (err: any) {
       toast.error(
         getErrorMessage(err as FetchBaseQueryError | SerializedError),
       );
+
+      if (err?.data?.message === "User is not verified") {
+        navigate("/verify", {
+          state: {
+            name: data.name,
+            email: data.email,
+            password: data.password,
+          },
+        });
+      }
     }
   };
 

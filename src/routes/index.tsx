@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
       },
       {
         Component: Contact,
-        path: "contact",
+        path: "contactUs",
       },
       {
         Component: Tours,
