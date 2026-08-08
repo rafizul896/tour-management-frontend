@@ -38,6 +38,7 @@ import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import {
   useGetSingleTourQuery,
   useGetTourTypesQuery,
+  useUpdateTourMutation,
 } from "@/redux/features/Tour/tour.api";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,6 +52,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
+import { useGetAllGuideApplicationsQuery } from "@/redux/features/guide/guide.api";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -69,6 +71,7 @@ const formSchema = z.object({
   minAge: z.string().min(1, "Minimum age is required"),
   division: z.string().min(1, "Division is required"),
   tourType: z.string().min(1, "Tour type is required"),
+  guides: z.array(z.string()).optional(),
 });
 
 const toFieldArray = (arr?: string[]) =>
@@ -80,6 +83,7 @@ export default function UpdateTour() {
   const [images, setImages] = useState<(File | FileMetadata | string)[] | []>(
     [],
   );
+  const [originalImages, setOriginalImages] = useState<string[]>([]);
   const [imagesReady, setImagesReady] = useState(false);
 
   const { data: tourData, isLoading: tourLoading } = useGetSingleTourQuery(
@@ -90,7 +94,7 @@ export default function UpdateTour() {
   const { data: divisionData, isLoading: divisionLoading } =
     useGetDivisionsQuery(undefined);
   const { data: tourTypeData } = useGetTourTypesQuery(undefined);
-  //   const [updateTour] = useUpdateTourMutation();
+  const [updateTour] = useUpdateTourMutation();
 
   const divisionOptions = divisionData?.map(
     (item: { _id: string; name: string }) => ({
@@ -125,6 +129,7 @@ export default function UpdateTour() {
       minAge: "",
       division: "",
       tourType: "",
+      guides: [],
     },
   });
 
@@ -148,15 +153,39 @@ export default function UpdateTour() {
       tourPlan: toFieldArray(tour.tourPlan),
       maxGuest: String(tour.maxGuest ?? ""),
       minAge: String(tour.minAge ?? ""),
-      division: tour.division ?? tour.division ?? "",
-      tourType: tour.tourType ?? tour.tourType ?? "",
+      division:
+        typeof tour.division === "string"
+          ? tour.division
+          : (tour.division?._id ?? ""),
+      tourType:
+        typeof tour.tourType === "string"
+          ? tour.tourType
+          : (tour.tourType?._id ?? ""),
+      guides: Array.isArray(tour.guides)
+        ? tour.guides.map((g: any) => (typeof g === "string" ? g : g?._id))
+        : [],
     });
 
     if (tour?.images) {
       setImages(tour?.images);
+      setOriginalImages(tour?.images);
     }
     setImagesReady(true);
   }, [tourData, form]);
+
+  const selectedDivision = form.watch("division");
+
+  const { data: guideAppData } = useGetAllGuideApplicationsQuery(
+    {
+      division: selectedDivision,
+      status: "APPROVED",
+    },
+    {
+      skip: !selectedDivision,
+    },
+  );
+
+  const guidData = guideAppData?.data;
 
   const {
     fields: includedFields,
@@ -202,8 +231,21 @@ export default function UpdateTour() {
       return;
     }
 
+    const currentImageUrls = images
+      .map((img) => {
+        if (img instanceof File) return null;
+        if (typeof img === "string") return img;
+        return img.url;
+      })
+      .filter((url): url is string => Boolean(url));
+
+    const deleteImages = originalImages.filter(
+      (url) => !currentImageUrls.includes(url),
+    );
+
     const tourData = {
       ...data,
+      deleteImages,
       costFrom: Number(data.costFrom),
       minAge: Number(data.minAge),
       maxGuest: Number(data.maxGuest),
@@ -236,17 +278,14 @@ export default function UpdateTour() {
       }
     });
 
-    console.log({ id: tourId, data: formData });
     try {
-      console.log(JSON.stringify(tourData, null, 2));
+      const res = await updateTour({ id: tourId, data: formData }).unwrap();
 
-      //   const res = await updateTour({ id: tourId, data: formData }).unwrap();
-      //   if (res.success) {
-      //     toast.success("Tour updated", { id: toastId });
-      //     navigate("/admin/manage-tour");
-      //   } else {
-      //     toast.error("Something went wrong", { id: toastId });
-      //   }
+      if (res.success) {
+        toast.success(res?.message || "Tour updated", { id: toastId });
+
+        navigate("/admin/manage-tour");
+      }
     } catch (err) {
       toast.error(
         getErrorMessage(err as FetchBaseQueryError | SerializedError),
@@ -353,27 +392,30 @@ export default function UpdateTour() {
                   render={({ field }) => (
                     <FormItem className="flex-1 ">
                       <FormLabel>Division</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={divisionLoading}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select Tour Division" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {divisionOptions?.map(
-                            (item: { label: string; value: string }) => (
-                              <SelectItem key={item.value} value={item.value}>
-                                {item.label}
-                              </SelectItem>
-                            ),
-                          )}
-                        </SelectContent>
-                      </Select>
-
+                      {divisionOptions && field.value ? (
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={divisionLoading}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select Tour Division" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {divisionOptions?.map(
+                              (item: { label: string; value: string }) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="h-9 rounded-md border bg-muted animate-pulse" />
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
@@ -384,33 +426,103 @@ export default function UpdateTour() {
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormLabel>Tour Type</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select Tour Type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {tourTypeOptions?.map(
-                            (option: { value: string; label: string }) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ),
-                          )}
-                        </SelectContent>
-                      </Select>
+                      {tourTypeOptions && field.value ? (
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select Tour Type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {tourTypeOptions.map(
+                              (option: { value: string; label: string }) => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="h-9 rounded-md border bg-muted animate-pulse" />
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+
+              <div>
+                <FormField
+                  control={form.control}
+                  name="guides"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Guides</FormLabel>
+                      <FormControl>
+                        <div className="border rounded-md p-3 max-h-56 overflow-y-auto space-y-2">
+                          {!selectedDivision && (
+                            <p className="text-sm text-muted-foreground">
+                              Select a division first to see available guides.
+                            </p>
+                          )}
+
+                          {selectedDivision && guidData?.length === 0 && (
+                            <p className="text-sm text-muted-foreground">
+                              No approved guides found for this division.
+                            </p>
+                          )}
+
+                          {guidData?.map((application: any) => {
+                            const guideId =
+                              application.guide?._id ?? application._id;
+                            const guideName = application.user?.name
+                              ? application.user.name
+                              : "Unknown guide";
+                            const checked = field.value?.includes(guideId);
+
+                            return (
+                              <label
+                                key={guideId}
+                                className="flex items-center gap-2 text-sm cursor-pointer"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      field.onChange([
+                                        ...(field.value ?? []),
+                                        guideId,
+                                      ]);
+                                    } else {
+                                      field.onChange(
+                                        field.value?.filter(
+                                          (id: string) => id !== guideId,
+                                        ),
+                                      );
+                                    }
+                                  }}
+                                  className="h-4 w-4"
+                                />
+                                {guideName}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <div className="flex gap-5">
                 <FormField
                   control={form.control}

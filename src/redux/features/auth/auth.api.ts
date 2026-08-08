@@ -9,6 +9,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+      invalidatesTags: ["USER"],
     }),
     logout: builder.mutation({
       query: () => ({
@@ -61,6 +62,29 @@ export const authApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["USER"],
+      transformResponse: (res) => res.data,
+    }),
+    changePassword: builder.mutation({
+      query: ({ oldPassword, newPassword }) => ({
+        url: "/auth/change-password",
+        method: "PATCH",
+        data: { oldPassword, newPassword },
+      }),
+    }),
+    updateProfile: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `/user/${id}`,
+        method: "PATCH",
+        data: formData,
+      }),
+    }),
+    getAllUsers: builder.query({
+      query: (params) => ({
+        url: "/user/all-users",
+        method: "GET",
+        params: params,
+      }),
+      providesTags: ["USER"],
     }),
   }),
 });
@@ -72,6 +96,9 @@ export const {
   useVerifyOtpMutation,
   useUserInfoQuery,
   useLogoutMutation,
+  useChangePasswordMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useUpdateProfileMutation,
+  useGetAllUsersQuery
 } = authApi;

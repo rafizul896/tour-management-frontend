@@ -74,7 +74,7 @@ export default function Verify() {
       if (res.success) {
         toast.success("OTP Sent", { id: toastId });
         setConfirmed(true);
-        setTimer(5);
+        setTimer(30);
       }
     } catch (err: any) {
       console.log(err);

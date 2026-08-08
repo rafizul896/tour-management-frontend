@@ -16,31 +16,38 @@ import {
 } from "@/redux/features/auth/auth.api";
 import { useAppDispatch } from "@/redux/hook";
 import { role } from "@/constants/role";
+import { Avatar, AvatarImage } from "./avatar";
 
 const links = [
   { href: "/admin", role: role.admin },
   { href: "/admin", role: role.superAdmin },
   { href: "/user", role: role.user },
-  { href: "/guide", role: role.guide },
+  { href: "/dashboard/profile", role: role.guide },
 ];
 
 const UserDropdown = () => {
-  const { data } = useUserInfoQuery(undefined);
+  const { data: userInfo } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
-  const userInfo = data?.data;
 
   const handleLogout = async () => {
     await logout(undefined);
     dispatch(authApi.util.resetApiState());
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="rounded-full">
-          <span className="text-sm font-semibold">
-            {userInfo.name.charAt(0).toUpperCase()}
-          </span>
+          {userInfo?.picture ? (
+            <Avatar className="border bg-muted">
+              <AvatarImage src={userInfo?.picture} alt={userInfo?.name} />
+            </Avatar>
+          ) : (
+            <span className="text-sm font-semibold">
+              {userInfo.name.charAt(0).toUpperCase()}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
@@ -55,7 +62,7 @@ const UserDropdown = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to={"/my-profile"} className="cursor-pointer">
+          <Link to={"/dashboard/profile"} className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             Profile
           </Link>
@@ -72,13 +79,20 @@ const UserDropdown = () => {
             ),
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleLogout}
-          className="cursor-pointer text-red-600"
-        >
-          <Button onClick={handleLogout} variant="outline" className="text-sm">
+        <DropdownMenuItem>
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            size={"sm"}
+            className="cursor-pointer text-red-600 hover:bg-red-500 hover:text-white"
+          >
             Logout
           </Button>
+          {userInfo?.role === "USER" && (
+            <Button variant="default" size={"sm"}>
+              <Link to="/dashboard/apply-guide">Apply for Guide</Link>
+            </Button>
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

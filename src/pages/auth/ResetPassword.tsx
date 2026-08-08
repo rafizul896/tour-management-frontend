@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -81,7 +82,11 @@ export function ResetPassword() {
           This password reset link is invalid or has expired. Please request a
           new one.
         </p>
-        <Link to="/login" className="underline underline-offset-4 text-sm">
+        <Link
+          to="/"
+          onClick={() => dispatch(openAuthDialog("login"))}
+          className="underline underline-offset-4 text-sm"
+        >
           Back to Login
         </Link>
       </div>
@@ -89,8 +94,8 @@ export function ResetPassword() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6">
-      <div className="w-full max-w-sm">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-4 md:p-6">
+      <Card className="w-full max-w-sm p-4">
         <div className="flex flex-col items-center gap-2 text-center mb-6">
           <h1 className="text-2xl font-bold">Reset your password</h1>
           <p className="text-balance text-sm text-muted-foreground">
@@ -136,11 +141,15 @@ export function ResetPassword() {
 
         <div className="text-center text-sm mt-6">
           Remember your password?{" "}
-          <Link to="/login" className="underline underline-offset-4">
+          <Link
+            to="/"
+            onClick={() => dispatch(openAuthDialog("login"))}
+            className="underline underline-offset-4"
+          >
             Login
           </Link>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

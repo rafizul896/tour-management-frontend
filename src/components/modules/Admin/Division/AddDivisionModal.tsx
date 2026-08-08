@@ -20,10 +20,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import AddDivision from "../../../../pages/Admin/AddDivision";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useAddDivisionMutation } from "@/redux/features/division/division.api";
 import { toast } from "sonner";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { SerializedError } from "@reduxjs/toolkit";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 export function AddDivisionModal() {
   const [open, setOpen] = useState(false);
@@ -39,21 +41,23 @@ export function AddDivisionModal() {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const formData = new FormData();
 
     formData.append("data", JSON.stringify(data));
     formData.append("file", image as File);
 
-    // console.log(formData.get("data"));
-    // console.log(formData.get("file"));
-
     try {
       const res = await addDivision(formData).unwrap();
-      toast.success("Division Added");
+
+      if (res?.success) {
+        toast.success(res?.message || "Division Added");
+      }
       setOpen(false);
     } catch (err) {
-      console.error(err);
+      toast.error(
+        getErrorMessage(err as FetchBaseQueryError | SerializedError),
+      );
     }
   };
 

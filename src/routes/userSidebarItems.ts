@@ -1,5 +1,7 @@
-import Bookings from "@/pages/User/Bookings";
+import BookingHistory from "@/pages/dashboard/User/BookingHistory";
+import PaymentHistory from "@/pages/dashboard/User/PaymentHistory";
 import { ISidebarItem } from "@/types";
+
 
 export const userSidebarItems: ISidebarItem[] = [
   {
@@ -8,7 +10,12 @@ export const userSidebarItems: ISidebarItem[] = [
       {
         title: "Bookings",
         url: "/user/bookings",
-        component: Bookings,
+        component: BookingHistory,
+      },
+      {
+        title: "Payments",
+        url: "/user/payments",
+        component: PaymentHistory,
       },
     ],
   },

@@ -11,8 +11,8 @@ export interface ITourPackage {
   costFrom: number;
   maxGuest: number;
   minAge: number;
-  division: string;
-  tourType: string;
+  division: IDivision;
+  tourType: ITourType;
   amenities: string[];
   included: string[];
   excluded: string[];
@@ -23,18 +23,17 @@ export interface ITourPackage {
   guides: IGuide[];
 }
 
-
-interface IDivision {
+export interface IDivision {
   _id: string;
   name: string;
 }
 
-interface ITourType {
+export interface ITourType {
   _id: string;
   name: string;
 }
 
-interface IGuide {
+export interface IGuide {
   _id: string;
   name: string;
 }

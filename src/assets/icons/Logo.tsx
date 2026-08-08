@@ -1,29 +1,34 @@
-export default function Logo() {
+type LogoProps = {
+  width?: number;
+  height?: number;
+  name?: boolean;
+};
+
+export default function Logo({ width = 50, height = 32, name=false }: LogoProps) {
   return (
-    <svg
-      id="logo-38"
-      width="78"
-      height="32"
-      viewBox="0 0 78 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {" "}
-      <path
-        d="M55.5 0H77.5L58.5 32H36.5L55.5 0Z"
-        className="ccustom"
-        fill="#FF7A00"
-      ></path>{" "}
-      <path
-        d="M35.5 0H51.5L32.5 32H16.5L35.5 0Z"
-        className="ccompli1"
-        fill="#FF9736"
-      ></path>{" "}
-      <path
-        d="M19.5 0H31.5L12.5 32H0.5L19.5 0Z"
-        className="ccompli2"
-        fill="#FFBC7D"
-      ></path>{" "}
-    </svg>
+    <div className="flex items-center gap-1">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={width}
+        height={height}
+        viewBox="0 0 50 39"
+        fill="none"
+        id="Logo"
+      >
+        <g id="logomark">
+          <path
+            d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z"
+            fill="#FDBA74"
+          />
+          <g id="shadow">
+            <path
+              d="M17.4231 27.1022L11.4199 36.0002H33.5015L49.0007 13.0273H32.7031L23.2071 27.1022H17.4231Z"
+              fill="#F97316"
+            />
+          </g>
+        </g>
+      </svg>
+      {name && <h1 className="font-semibold text-lg">Explore<span className="text-primary">Bangla</span></h1>}
+    </div>
   );
 }

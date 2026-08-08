@@ -1,11 +1,29 @@
 import { AlertCircleIcon, ImageUpIcon, XIcon } from "lucide-react";
-
-import { useFileUpload } from "@/hooks/use-file-upload";
+import { FileMetadata, useFileUpload } from "@/hooks/use-file-upload";
 import { useEffect } from "react";
 
-export default function SingleImageUploader({ onChange }) {
+export default function SingleImageUploader({
+  initialImage,
+  onChange,
+}: {
+  initialImage?: string;
+  onChange: (file: File | null) => void;
+}) {
   const maxSizeMB = 5;
-  const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
+  const maxSize = maxSizeMB * 1024 * 1024;
+
+  // Convert the plain URL into the shape useFileUpload expects
+  const initialFiles: FileMetadata[] = initialImage
+    ? [
+        {
+          id: initialImage,
+          name: initialImage.split("/").pop() || "image",
+          size: 0,
+          type: "image/*",
+          url: initialImage,
+        },
+      ]
+    : [];
 
   const [
     { files, isDragging, errors },
@@ -21,24 +39,23 @@ export default function SingleImageUploader({ onChange }) {
   ] = useFileUpload({
     accept: "image/*",
     maxSize,
+    initialFiles,
   });
 
-  console.log("Inside image uploader", files);
-
   useEffect(() => {
-    if (files.length > 0) {
+    if (files.length > 0 && files[0].file instanceof File) {
       onChange(files[0].file);
     } else {
       onChange(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 
-  const previewUrl = files[0]?.preview || null;
+  const previewUrl = files[0]?.preview || initialImage || null;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
-        {/* Drop area */}
         <div
           role="button"
           onClick={openFileDialog}
@@ -84,7 +101,7 @@ export default function SingleImageUploader({ onChange }) {
             <button
               type="button"
               className="focus-visible:border-ring focus-visible:ring-ring/50 z-50 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:ring-[3px]"
-              onClick={() => removeFile(files[0]?.id)}
+              onClick={() => files[0] ? removeFile(files[0].id) : onChange(null)}
               aria-label="Remove image"
             >
               <XIcon className="size-4" aria-hidden="true" />
