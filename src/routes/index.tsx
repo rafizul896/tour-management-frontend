@@ -1,6 +1,5 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import Verify from "@/pages/Auth/Verify";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { createBrowserRouter, Navigate } from "react-router";
 import { adminSidebarItems } from "./adminSidebarItems";
@@ -13,7 +12,6 @@ import Tours from "@/pages/Tours";
 import TourDetails from "@/pages/TourDetails";
 import Booking from "@/pages/Booking";
 import Homepage from "@/pages/Homepage";
-import { ResetPassword } from "@/pages/Auth/ResetPassword";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import AddTour from "@/components/modules/Admin/Tour/AddTour";
@@ -24,6 +22,8 @@ import ApplyForGuide from "@/pages/ApplyForGuide";
 import { guideSidebarItems } from "./guideSidebarItems";
 import PaymentFail from "@/pages/Payment/PaymentFail";
 import PaymentSuccess from "@/pages/Payment/PaymentSuccess";
+import Verify from "@/pages/Auth/Verify";
+import { ResetPassword } from "@/pages/Auth/ResetPassword";
 
 export const router = createBrowserRouter([
   {
