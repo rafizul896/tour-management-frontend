@@ -13,8 +13,6 @@ import Tours from "@/pages/Tours";
 import TourDetails from "@/pages/TourDetails";
 import Booking from "@/pages/Booking";
 import Homepage from "@/pages/Homepage";
-import Success from "@/pages/Payment/Success";
-import Fail from "@/pages/Payment/Fail";
 import { ResetPassword } from "@/pages/Auth/ResetPassword";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
@@ -24,6 +22,8 @@ import NotFound from "@/pages/NotFound";
 import { commonSidebarItems } from "./commonSidebarItens";
 import ApplyForGuide from "@/pages/ApplyForGuide";
 import { guideSidebarItems } from "./guideSidebarItems";
+import PaymentFail from "@/pages/Payment/PaymentFail";
+import PaymentSuccess from "@/pages/Payment/PaymentSuccess";
 
 export const router = createBrowserRouter([
   {
@@ -117,11 +117,11 @@ export const router = createBrowserRouter([
     path: "*",
   },
   {
-    Component: withAuth(Success),
+    Component: withAuth(PaymentSuccess),
     path: "/payment/success",
   },
   {
-    Component: withAuth(Fail),
+    Component: withAuth(PaymentFail),
     path: "/payment/fail",
   },
 ]);

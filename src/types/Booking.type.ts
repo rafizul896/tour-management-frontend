@@ -8,12 +8,14 @@ export interface Booking {
   tour: {
     _id: string;
     title: string;
-    images?: string[]
+    images?: string[];
   };
   payment?: {
     _id: string;
     status: string;
     amount: number;
+    transactionId: string;
+    invoiceUrl: string
   };
   guestCount: number;
   status: BookingStatus;
@@ -28,4 +30,3 @@ export const BOOKING_STATUS = {
 } as const;
 
 export type BookingStatus = keyof typeof BOOKING_STATUS;
-
