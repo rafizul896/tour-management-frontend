@@ -30,7 +30,7 @@ export default function Navbar() {
 
   return (
     <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between gap-4">
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between gap-4">
         {/* Left side */}
         <div className="flex items-center gap-3">
           {/* Mobile menu trigger */}

@@ -72,11 +72,14 @@ export function UpdateDivisionModal({
         data: formData,
       }).unwrap();
 
+      console.log("res",res)
+
       if (res?.success) {
         toast.success(res?.message || "Division Updated");
       }
       onOpenChange(false);
     } catch (err) {
+      console.log(err)
       toast.error(
         getErrorMessage(err as FetchBaseQueryError | SerializedError),
       );

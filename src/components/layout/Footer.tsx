@@ -44,7 +44,7 @@ const Footer = () => {
   return (
     <footer className="border-t bg-background font-lato">
       {/* Main footer content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-8">
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-4">
