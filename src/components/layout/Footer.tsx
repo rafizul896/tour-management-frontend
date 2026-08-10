@@ -13,7 +13,6 @@ const supportLinks = [
   { label: "Privacy policy", href: "/privacy-policy" },
   { label: "Terms & conditions", href: "/terms-and-conditions" },
   { label: "FAQ", href: "/faq" },
-  { label: "Help center", href: "/help-center" },
 ];
 
 const socialLinks = [
@@ -158,30 +157,10 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t mt-10 pt-6 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground text-center sm:text-left">
+        <div className="border-t mt-10 pt-6">
+          <p className="text-sm text-muted-foreground text-center ">
             © {new Date().getFullYear()} TourVista. All rights reserved.
           </p>
-          <div className="flex items-center gap-5 text-sm text-muted-foreground">
-            <Link
-              to="/privacy-policy"
-              className="hover:text-primary transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link
-              to="/terms-and-conditions"
-              className="hover:text-primary transition-colors"
-            >
-              Terms
-            </Link>
-            <Link
-              to="/sitemap"
-              className="hover:text-primary transition-colors"
-            >
-              Sitemap
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

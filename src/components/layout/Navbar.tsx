@@ -21,6 +21,7 @@ import UserDropdown from "../ui/UserDropdown";
 const navigationLinks = [
   { href: "/", label: "Home", role: "PUBLIC" },
   { href: "/tours", label: "Tours", role: "PUBLIC" },
+  { href: "/division", label: "Division", role: "PUBLIC" },
   { href: "/about", label: "About", role: "PUBLIC" },
   { href: "/contactUs", label: "Contact", role: "PUBLIC" },
 ];

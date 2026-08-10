@@ -24,6 +24,10 @@ import PaymentFail from "@/pages/Payment/PaymentFail";
 import PaymentSuccess from "@/pages/Payment/PaymentSuccess";
 import ResetPassword from "@/pages/Auth/ResetPassword";
 import Verify from "@/pages/Auth/Verify";
+import PrivacyPolicy from "@/pages/Info/PrivacyPolicy";
+import TermsAndConditions from "@/pages/Info/TermsAndConditions";
+import FAQ from "@/pages/Info/FAQ";
+import Division from "@/pages/Division";
 
 export const router = createBrowserRouter([
   {
@@ -47,12 +51,28 @@ export const router = createBrowserRouter([
         path: "tours",
       },
       {
+        Component: Division,
+        path: "division",
+      },
+      {
         Component: TourDetails,
         path: "tours/:id",
       },
       {
         Component: withAuth(Booking),
         path: "booking/:id",
+      },
+      {
+        Component: PrivacyPolicy,
+        path: "privacy-policy",
+      },
+      {
+        Component: TermsAndConditions,
+        path: "terms-and-conditions",
+      },
+      {
+        Component: FAQ,
+        path: "faq",
       },
     ],
   },
