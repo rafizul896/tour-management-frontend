@@ -22,8 +22,8 @@ import ApplyForGuide from "@/pages/ApplyForGuide";
 import { guideSidebarItems } from "./guideSidebarItems";
 import PaymentFail from "@/pages/Payment/PaymentFail";
 import PaymentSuccess from "@/pages/Payment/PaymentSuccess";
+import ResetPassword from "@/pages/Auth/ResetPassword";
 import Verify from "@/pages/Auth/Verify";
-import { ResetPassword } from "@/pages/Auth/ResetPassword";
 
 export const router = createBrowserRouter([
   {
