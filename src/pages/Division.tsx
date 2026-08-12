@@ -47,7 +47,7 @@ const seasonIcons: Record<string, typeof Sun> = {
   autumn: Sun,
 };
 
-const ExploreBangla = () => {
+const Division = () => {
   const { data: divisionData, isLoading } = useGetDivisionsQuery(undefined);
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
@@ -575,4 +575,4 @@ const ExploreBangla = () => {
   );
 };
 
-export default ExploreBangla;
+export default Division;
