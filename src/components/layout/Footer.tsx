@@ -13,7 +13,6 @@ const supportLinks = [
   { label: "Privacy policy", href: "/privacy-policy" },
   { label: "Terms & conditions", href: "/terms-and-conditions" },
   { label: "FAQ", href: "/faq" },
-  { label: "Help center", href: "/help-center" },
 ];
 
 const socialLinks = [
@@ -44,7 +43,7 @@ const Footer = () => {
   return (
     <footer className="border-t bg-background font-lato">
       {/* Main footer content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-8">
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-4">
@@ -158,30 +157,10 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t mt-10 pt-6 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground text-center sm:text-left">
+        <div className="border-t mt-10 pt-6">
+          <p className="text-sm text-muted-foreground text-center ">
             © {new Date().getFullYear()} TourVista. All rights reserved.
           </p>
-          <div className="flex items-center gap-5 text-sm text-muted-foreground">
-            <Link
-              to="/privacy-policy"
-              className="hover:text-primary transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link
-              to="/terms-and-conditions"
-              className="hover:text-primary transition-colors"
-            >
-              Terms
-            </Link>
-            <Link
-              to="/sitemap"
-              className="hover:text-primary transition-colors"
-            >
-              Sitemap
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

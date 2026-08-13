@@ -1,6 +1,6 @@
 import { AlertCircleIcon, ImageUpIcon, XIcon } from "lucide-react";
 import { FileMetadata, useFileUpload } from "@/hooks/use-file-upload";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function SingleImageUploader({
   initialImage,
@@ -12,15 +12,20 @@ export default function SingleImageUploader({
   const maxSizeMB = 5;
   const maxSize = maxSizeMB * 1024 * 1024;
 
-  // Convert the plain URL into the shape useFileUpload expects
-  const initialFiles: FileMetadata[] = initialImage
+  // Guard against non-string values (File objects, null, etc.)
+  const safeInitialImage =
+    typeof initialImage === "string" && initialImage.length > 0
+      ? initialImage
+      : undefined;
+
+  const initialFiles: FileMetadata[] = safeInitialImage
     ? [
         {
-          id: initialImage,
-          name: initialImage.split("/").pop() || "image",
+          id: safeInitialImage,
+          name: safeInitialImage.split("/").pop() || "image",
           size: 0,
           type: "image/*",
-          url: initialImage,
+          url: safeInitialImage,
         },
       ]
     : [];
@@ -42,27 +47,48 @@ export default function SingleImageUploader({
     initialFiles,
   });
 
+  // Track whether the user has interacted (selected/removed) so we don't
+  // let a stale initialImage prop override their action.
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+
   useEffect(() => {
+    if (!hasUserInteracted) return;
+
     if (files.length > 0 && files[0].file instanceof File) {
       onChange(files[0].file);
     } else {
       onChange(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files]);
+  }, [files, hasUserInteracted]);
 
-  const previewUrl = files[0]?.preview || initialImage || null;
+  const previewUrl = files[0]?.preview || safeInitialImage || null;
+
+  const handleRemove = () => {
+    setHasUserInteracted(true);
+    if (files[0]) {
+      removeFile(files[0].id);
+    } else {
+      onChange(null);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
         <div
           role="button"
-          onClick={openFileDialog}
+          onClick={() => {
+            setHasUserInteracted(true);
+            openFileDialog();
+          }}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
-          onDrop={handleDrop}
+          onDrop={(e) => {
+            setHasUserInteracted(true);
+            handleDrop(e);
+          }}
           data-dragging={isDragging || undefined}
           className="border-input hover:bg-accent/50 data-[dragging=true]:bg-accent/50 has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed p-4 transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none has-[input:focus]:ring-[3px]"
         >
@@ -101,7 +127,7 @@ export default function SingleImageUploader({
             <button
               type="button"
               className="focus-visible:border-ring focus-visible:ring-ring/50 z-50 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:ring-[3px]"
-              onClick={() => files[0] ? removeFile(files[0].id) : onChange(null)}
+              onClick={handleRemove}
               aria-label="Remove image"
             >
               <XIcon className="size-4" aria-hidden="true" />
