@@ -247,7 +247,7 @@ Output Directory: dist
 Make sure to configure the production environment variable:
 
 ```env
-VITE_BASE_URL=https://your-backend-url.com/api
+VITE_BASE_URL=https://explorebangla-server.vercel.app/api/v1
 ```
 
 ## 🔮 Future Improvements
